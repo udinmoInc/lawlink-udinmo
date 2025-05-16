@@ -1,0 +1,243 @@
+import React, { useState } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { Heart, MessageCircle, Share2, MoreHorizontal } from 'lucide-react';
+import { supabase, type Post, type Comment, type Profile } from '../lib/supabase';
+import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
+
+interface PostCardProps {
+  post: Post;
+  onPostUpdate: () => void;
+}
+
+const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
+  const { user } = useAuth();
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState<(Comment & { profiles: Profile })[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLiked, setIsLiked] = useState(post.user_has_liked || false);
+  const [likesCount, setLikesCount] = useState(Number(post.likes_count) || 0);
+
+  const toggleComments = async () => {
+    if (!showComments) {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('comments')
+        .select('*, profiles(*)')
+        .eq('post_id', post.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        toast.error('Failed to load comments');
+        console.error(error);
+      } else {
+        setComments(data as (Comment & { profiles: Profile })[]);
+      }
+      setIsLoading(false);
+    }
+    setShowComments(!showComments);
+  };
+
+  const handleAddComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error('Please sign in to comment');
+      return;
+    }
+    if (!newComment.trim()) return;
+
+    setIsLoading(true);
+    try {
+      const { data: newCommentData, error: commentError } = await supabase
+        .from('comments')
+        .insert([
+          {
+            post_id: post.id,
+            user_id: user.id,
+            content: newComment.trim(),
+          },
+        ])
+        .select('*, profiles(*)');
+
+      if (commentError) throw commentError;
+
+      // Update comments list with the new comment
+      setComments([newCommentData[0] as (Comment & { profiles: Profile }), ...comments]);
+      setNewComment('');
+
+      // Update post's comment count
+      const { error: updateError } = await supabase
+        .from('posts')
+        .update({ comments_count: (Number(post.comments_count) || 0) + 1 })
+        .eq('id', post.id);
+
+      if (updateError) throw updateError;
+
+      onPostUpdate();
+    } catch (error: any) {
+      toast.error('Failed to add comment');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!user) {
+      toast.error('Please sign in to like posts');
+      return;
+    }
+
+    try {
+      if (isLiked) {
+        // Unlike
+        const { error } = await supabase
+          .from('likes')
+          .delete()
+          .eq('post_id', post.id)
+          .eq('user_id', user.id);
+
+        if (error) throw error;
+
+        setIsLiked(false);
+        setLikesCount(prev => prev - 1);
+
+        // Update post's like count
+        await supabase
+          .from('posts')
+          .update({ likes_count: likesCount - 1 })
+          .eq('id', post.id);
+
+      } else {
+        // Like
+        const { error } = await supabase
+          .from('likes')
+          .insert([{ post_id: post.id, user_id: user.id }]);
+
+        if (error) throw error;
+
+        setIsLiked(true);
+        setLikesCount(prev => prev + 1);
+
+        // Update post's like count
+        await supabase
+          .from('posts')
+          .update({ likes_count: likesCount + 1 })
+          .eq('id', post.id);
+      }
+    } catch (error: any) {
+      toast.error(isLiked ? 'Failed to unlike post' : 'Failed to like post');
+      console.error(error);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6 transition-all duration-300 hover:shadow-md">
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
+              {post.profiles?.username.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div className="ml-3">
+              <p className="font-semibold text-gray-900">{post.profiles?.full_name || post.profiles?.username}</p>
+              <p className="text-xs text-gray-500">
+                {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+              </p>
+            </div>
+          </div>
+          <button className="text-gray-400 hover:text-gray-600">
+            <MoreHorizontal size={20} />
+          </button>
+        </div>
+
+        <div className="mb-4">
+          <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
+        </div>
+
+        {post.image_url && (
+          <div className="mb-4 rounded-lg overflow-hidden">
+            <img src={post.image_url} alt="Post" className="w-full h-auto object-cover" />
+          </div>
+        )}
+
+        <div className="flex items-center justify-between text-gray-500 border-t border-gray-100 pt-3">
+          <button
+            onClick={handleLike}
+            className={`flex items-center ${isLiked ? 'text-red-500' : 'hover:text-red-500'}`}
+          >
+            <Heart size={20} className={isLiked ? 'fill-current' : ''} />
+            <span className="ml-2 text-sm">{likesCount}</span>
+          </button>
+
+          <button onClick={toggleComments} className="flex items-center hover:text-blue-500">
+            <MessageCircle size={20} />
+            <span className="ml-2 text-sm">{Number(post.comments_count) || 0}</span>
+          </button>
+
+          <button className="flex items-center hover:text-green-500">
+            <Share2 size={20} />
+          </button>
+        </div>
+      </div>
+
+      {showComments && (
+        <div className="bg-gray-50 p-4 border-t border-gray-100">
+          {user && (
+            <form onSubmit={handleAddComment} className="mb-4">
+              <div className="flex">
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment..."
+                  className="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isLoading}
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 disabled:bg-blue-300"
+                  disabled={isLoading || !newComment.trim()}
+                >
+                  Post
+                </button>
+              </div>
+            </form>
+          )}
+
+          {isLoading ? (
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+            </div>
+          ) : comments.length > 0 ? (
+            <div className="space-y-4">
+              {comments.map((comment) => (
+                <div key={comment.id} className="flex space-x-3">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs">
+                    {comment.profiles?.username.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <div className="flex-1 bg-white p-3 rounded-lg shadow-sm">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-medium text-sm text-gray-900">
+                        {comment.profiles?.full_name || comment.profiles?.username}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-800">{comment.content}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 py-4">No comments yet. Be the first to comment!</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PostCard;
