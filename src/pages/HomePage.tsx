@@ -21,9 +21,7 @@ const HomePage: React.FC = () => {
         .from('posts')
         .select(`
           *,
-          profiles (*),
-          likes_count: likes(count),
-          comments_count: comments(count)
+          profiles (*)
         `)
         .order('created_at', { ascending: false });
 
@@ -33,8 +31,6 @@ const HomePage: React.FC = () => {
 
       let processedPosts = postsData.map((post: any) => ({
         ...post,
-        likes_count: post.likes_count[0]?.count || 0,
-        comments_count: post.comments_count[0]?.count || 0,
         user_has_liked: false,
       }));
 
