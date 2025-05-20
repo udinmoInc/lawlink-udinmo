@@ -21,12 +21,12 @@ function App() {
           <Navbar />
           <div className="flex">
             {/* Desktop Left Sidebar */}
-            <div className="hidden md:block w-64 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-100 overflow-y-auto">
+            <div className="hidden md:block w-[240px] fixed left-0 top-16 bottom-0 bg-white border-r border-gray-100 overflow-y-auto">
               <Sidebar />
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 md:ml-64 md:mr-64">
+            <div className="flex-1 md:ml-[240px] md:mr-[240px] max-w-[600px] mx-auto">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -39,7 +39,7 @@ function App() {
             </div>
 
             {/* Desktop Right Sidebar */}
-            <div className="hidden md:block w-64 fixed right-0 top-16 bottom-0 bg-white border-l border-gray-100 overflow-y-auto">
+            <div className="hidden md:block w-[240px] fixed right-0 top-16 bottom-0 bg-white border-l border-gray-100 overflow-y-auto">
               <TrendingSidebar />
             </div>
           </div>
