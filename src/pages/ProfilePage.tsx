@@ -49,22 +49,20 @@ const ProfilePage: React.FC = () => {
         .select(`
           *,
           profiles(*),
-          likes_count:likes(count),
-          comments_count:comments(count),
-          user_has_liked:likes!inner(user_id)
+          likes_count: likes(count),
+          comments_count: comments(count),
+          user_has_liked: likes!inner(user_id)
         `)
         .eq('user_id', user.id)
-        .eq('likes.user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Process the data to handle the counts and user_has_liked field
-      const processedPosts = data.map((post: any) => ({
+      const processedPosts = data?.map((post: any) => ({
         ...post,
         likes_count: post.likes_count?.[0]?.count || 0,
         comments_count: post.comments_count?.[0]?.count || 0,
-        user_has_liked: post.user_has_liked?.length > 0,
+        user_has_liked: post.user_has_liked?.some((like: any) => like.user_id === user.id) || false
       }));
 
       setPosts(processedPosts);

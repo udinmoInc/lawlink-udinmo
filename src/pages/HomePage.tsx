@@ -11,7 +11,9 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchPosts();
+    if (user) {
+      fetchPosts();
+    }
   }, [user]);
 
   const fetchPosts = async () => {
@@ -21,7 +23,10 @@ const HomePage: React.FC = () => {
         .from('posts')
         .select(`
           *,
-          profiles (*)
+          profiles (*),
+          likes_count: likes(count),
+          comments_count: comments(count),
+          user_has_liked: likes!inner(user_id)
         `)
         .order('created_at', { ascending: false });
 
@@ -29,26 +34,12 @@ const HomePage: React.FC = () => {
 
       if (postsError) throw postsError;
 
-      let processedPosts = postsData.map((post: any) => ({
+      const processedPosts = postsData?.map((post: any) => ({
         ...post,
-        user_has_liked: false,
+        likes_count: post.likes_count?.[0]?.count || 0,
+        comments_count: post.comments_count?.[0]?.count || 0,
+        user_has_liked: post.user_has_liked?.some((like: any) => like.user_id === user?.id) || false
       }));
-
-      if (user) {
-        // Get user's likes
-        const { data: userLikes, error: likesError } = await supabase
-          .from('likes')
-          .select('post_id')
-          .eq('user_id', user.id);
-
-        if (likesError) throw likesError;
-
-        const likedPostIds = new Set(userLikes?.map(like => like.post_id));
-        processedPosts = processedPosts.map(post => ({
-          ...post,
-          user_has_liked: likedPostIds.has(post.id),
-        }));
-      }
 
       setPosts(processedPosts);
     } catch (error: any) {
