@@ -22,11 +22,7 @@ const GroupList: React.FC = () => {
       const { data, error } = await supabase
         .from('group_members')
         .select(`
-          group_id,
-          user_id,
-          role,
-          created_at,
-          group:group_id(
+          group:group_id (
             id,
             title,
             description,
@@ -34,7 +30,7 @@ const GroupList: React.FC = () => {
             is_private,
             created_at,
             updated_at,
-            members:group_members(
+            members:group_members (
               id,
               user_id,
               role,
@@ -117,5 +113,3 @@ const GroupList: React.FC = () => {
     </div>
   );
 };
-
-export default GroupList;

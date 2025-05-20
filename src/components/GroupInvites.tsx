@@ -28,8 +28,21 @@ const GroupInvites: React.FC = () => {
           group_id,
           inviter_id,
           invitee_id,
-          group:group_id(id, title, description, cover_image_url, is_private, created_at, updated_at),
-          inviter:inviter_id(id, username, full_name, avatar_url)
+          group:group_id (
+            id,
+            title,
+            description,
+            cover_image_url,
+            is_private,
+            created_at,
+            updated_at
+          ),
+          inviter:inviter_id (
+            id,
+            username,
+            full_name,
+            avatar_url
+          )
         `)
         .eq('invitee_id', user.id)
         .eq('status', 'pending');
@@ -110,5 +123,3 @@ const GroupInvites: React.FC = () => {
     </div>
   );
 };
-
-export default GroupInvites;
