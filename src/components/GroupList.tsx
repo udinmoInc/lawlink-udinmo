@@ -3,11 +3,13 @@ import { supabase, type Group, type GroupMember } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { Users, Lock, Globe } from 'lucide-react';
 import toast from 'react-hot-toast';
+import InviteGroupMember from './InviteGroupMember';
 
 const GroupList: React.FC = () => {
   const { user } = useAuth();
   const [groups, setGroups] = useState<(Group & { members: GroupMember[] })[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -108,6 +110,17 @@ const GroupList: React.FC = () => {
                   <Users className="h-4 w-4 mr-1" />
                   <span>{(group.members as any)[0]?.count || 0} members</span>
                 </div>
+
+                <button
+                  onClick={() => setSelectedGroupId(selectedGroupId === group.id ? null : group.id)}
+                  className="mt-4 w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  {selectedGroupId === group.id ? 'Cancel Invite' : 'Invite Members'}
+                </button>
+
+                {selectedGroupId === group.id && (
+                  <InviteGroupMember groupId={group.id} groupTitle={group.title} />
+                )}
               </div>
             </div>
           ))}
