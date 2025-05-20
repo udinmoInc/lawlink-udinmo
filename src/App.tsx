@@ -17,6 +17,16 @@ import PostPage from './pages/PostPage';
 
 const AppContent = () => {
   const { user } = useAuth();
+  const isAuthPage = window.location.pathname === '/login' || window.location.pathname === '/register';
+
+  if (isAuthPage) {
+    return (
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -31,8 +41,6 @@ const AppContent = () => {
         <div className={`flex-1 ${user ? 'md:ml-[275px] md:mr-[320px]' : 'md:ml-[275px] md:mr-[320px]'} min-h-screen`}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/create" element={<CreatePostPage />} />
             <Route path="/groups" element={<GroupsPage />} />
