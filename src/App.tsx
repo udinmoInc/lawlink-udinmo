@@ -14,6 +14,7 @@ import GroupsPage from './pages/GroupsPage';
 import PostPage from './pages/PostPage';
 import ExplorePage from './pages/ExplorePage';
 import NotificationsPage from './pages/NotificationsPage';
+import TrendingSidebar from './components/TrendingSidebar';
 
 function App() {
   return (
