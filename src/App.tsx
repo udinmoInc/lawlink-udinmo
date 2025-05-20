@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
 import MobileNavbar from './components/MobileNavbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -14,7 +13,6 @@ import GroupsPage from './pages/GroupsPage';
 import PostPage from './pages/PostPage';
 import ExplorePage from './pages/ExplorePage';
 import NotificationsPage from './pages/NotificationsPage';
-import TrendingSidebar from './components/TrendingSidebar';
 
 function App() {
   return (
@@ -23,42 +21,24 @@ function App() {
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           <div className="container mx-auto px-4">
-            <div className="flex gap-6 relative">
-              {/* Left Sidebar - Only visible on large screens */}
-              <div className="hidden lg:block w-64 fixed left-4 top-16 bottom-0">
-                <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full overflow-y-auto">
-                  <Sidebar />
-                </div>
-              </div>
-
-              {/* Main Content */}
-              <main className="w-full lg:ml-72 lg:mr-88 pt-16 pb-16 lg:pb-6 lg:max-w-[600px] mx-auto">
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/create" element={<CreatePostPage />} />
-                  <Route path="/groups" element={<GroupsPage />} />
-                  <Route path="/post/:id" element={<PostPage />} />
-                  <Route path="/explore" element={<ExplorePage />} />
-                  <Route path="/notifications" element={<NotificationsPage />} />
-                </Routes>
-              </main>
-
-              {/* Right Sidebar - Only visible on large screens */}
-              <div className="hidden lg:block w-80 fixed right-4 top-16 bottom-0">
-                <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full overflow-y-auto">
-                  <TrendingSidebar />
-                </div>
-              </div>
-            </div>
+            {/* Main Content */}
+            <main className="w-full max-w-2xl mx-auto pt-16 pb-20">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/create" element={<CreatePostPage />} />
+                <Route path="/groups" element={<GroupsPage />} />
+                <Route path="/post/:id" element={<PostPage />} />
+                <Route path="/explore" element={<ExplorePage />} />
+                <Route path="/notifications" element={<NotificationsPage />} />
+              </Routes>
+            </main>
           </div>
 
-          {/* Mobile Navigation - Visible on mobile and medium screens */}
-          <div className="lg:hidden">
-            <MobileNavbar />
-          </div>
+          {/* Mobile Navigation */}
+          <MobileNavbar />
 
           <Toaster 
             position="top-right"
