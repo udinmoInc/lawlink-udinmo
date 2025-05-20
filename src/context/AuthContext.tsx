@@ -84,6 +84,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     try {
       setLoading(true);
+      if (!user) {
+        toast.success('Already signed out!');
+        navigate('/login');
+        return;
+      }
+      setUser(null); // Clear local user state first
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       toast.success('Signed out successfully!');
