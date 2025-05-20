@@ -22,9 +22,14 @@ const GroupInvites: React.FC = () => {
       const { data, error } = await supabase
         .from('group_invites')
         .select(`
-          *,
-          group:groups(*),
-          inviter:profiles!inviter_id(*)
+          id,
+          status,
+          created_at,
+          group_id,
+          inviter_id,
+          invitee_id,
+          group:group_id(id, title, description, cover_image_url, is_private, created_at, updated_at),
+          inviter:inviter_id(id, username, full_name, avatar_url)
         `)
         .eq('invitee_id', user.id)
         .eq('status', 'pending');

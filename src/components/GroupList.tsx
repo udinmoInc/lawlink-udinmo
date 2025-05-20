@@ -22,9 +22,24 @@ const GroupList: React.FC = () => {
       const { data, error } = await supabase
         .from('group_members')
         .select(`
-          groups (
-            *,
-            members:group_members(*)
+          group_id,
+          user_id,
+          role,
+          created_at,
+          group:group_id(
+            id,
+            title,
+            description,
+            cover_image_url,
+            is_private,
+            created_at,
+            updated_at,
+            members:group_members(
+              id,
+              user_id,
+              role,
+              created_at
+            )
           )
         `)
         .eq('user_id', user.id);
@@ -32,8 +47,8 @@ const GroupList: React.FC = () => {
       if (error) throw error;
 
       const processedGroups = data?.map(item => ({
-        ...item.groups,
-        members: item.groups.members
+        ...item.group,
+        members: item.group.members
       })) || [];
 
       setGroups(processedGroups);
