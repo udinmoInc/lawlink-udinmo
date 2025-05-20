@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import TrendingSidebar from './components/TrendingSidebar';
+import MobileNavbar from './components/MobileNavbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -17,16 +18,16 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-white">
           <Navbar />
           <div className="flex">
             {/* Desktop Left Sidebar */}
-            <div className="hidden md:block w-[240px] fixed left-0 top-16 bottom-0 bg-white border-r border-gray-100 overflow-y-auto">
+            <div className="hidden md:block w-[275px] fixed left-0 top-16 bottom-0 bg-white border-r border-gray-100 overflow-y-auto">
               <Sidebar />
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 md:ml-[240px] md:mr-[240px] max-w-[600px] mx-auto">
+            <div className="flex-1 md:ml-[275px] md:mr-[320px] min-h-screen">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -39,10 +40,14 @@ function App() {
             </div>
 
             {/* Desktop Right Sidebar */}
-            <div className="hidden md:block w-[240px] fixed right-0 top-16 bottom-0 bg-white border-l border-gray-100 overflow-y-auto">
+            <div className="hidden md:block w-[320px] fixed right-0 top-16 bottom-0 bg-white border-l border-gray-100 overflow-y-auto">
               <TrendingSidebar />
             </div>
           </div>
+
+          {/* Mobile Navigation */}
+          <MobileNavbar />
+
           <Toaster 
             position="top-right"
             toastOptions={{
