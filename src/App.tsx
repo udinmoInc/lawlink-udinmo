@@ -9,6 +9,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import CreatePostPage from './pages/CreatePostPage';
 import GroupsPage from './pages/GroupsPage';
+import PostPage from './pages/PostPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/create" element={<CreatePostPage />} />
             <Route path="/groups" element={<GroupsPage />} />
+            <Route path="/post/:id" element={<PostPage />} />
           </Routes>
           <Toaster position="top-right" />
         </div>

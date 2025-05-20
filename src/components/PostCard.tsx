@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Link as LinkIcon } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Link as LinkIcon, Twitter, Facebook } from 'lucide-react';
 import { supabase, type Post, type Comment, type Profile } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -114,7 +114,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
 
   const handleShare = async (method: 'copy' | 'twitter' | 'facebook') => {
     const postUrl = `${window.location.origin}/post/${post.id}`;
-    const postText = `${post.content.slice(0, 100)}${post.content.length > 100 ? '...' : ''}`;
+    const postText = post.content?.slice(0, 100) + (post.content?.length > 100 ? '...' : '');
     
     switch (method) {
       case 'copy':
@@ -144,33 +144,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
     setShowShareMenu(false);
   };
 
-  // Generate metadata for the post
-  const metadata = {
-    '@context': 'https://schema.org',
-    '@type': 'SocialMediaPosting',
-    author: {
-      '@type': 'Person',
-      name: post.profiles?.full_name || post.profiles?.username,
-    },
-    datePublished: post.created_at,
-    text: post.content,
-    interactionStatistic: [
-      {
-        '@type': 'InteractionCounter',
-        interactionType: 'https://schema.org/LikeAction',
-        userInteractionCount: likesCount,
-      },
-      {
-        '@type': 'InteractionCounter',
-        interactionType: 'https://schema.org/CommentAction',
-        userInteractionCount: commentsCount,
-      },
-    ],
-  };
-
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
-      <script type="application/ld+json">{JSON.stringify(metadata)}</script>
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
@@ -182,7 +157,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
               />
             ) : (
               <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
-                {post.profiles?.username.charAt(0).toUpperCase() || 'U'}
+                {post.profiles?.username?.charAt(0).toUpperCase() || 'U'}
               </div>
             )}
             <div className="ml-3">
@@ -232,7 +207,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
             </button>
 
             {showShareMenu && (
-              <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
+              <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
                 <button
                   onClick={() => handleShare('copy')}
                   className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
@@ -242,14 +217,16 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
                 </button>
                 <button
                   onClick={() => handleShare('twitter')}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                  className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
                 >
+                  <Twitter size={16} className="mr-2" />
                   Share on Twitter
                 </button>
                 <button
                   onClick={() => handleShare('facebook')}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                  className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
                 >
+                  <Facebook size={16} className="mr-2" />
                   Share on Facebook
                 </button>
               </div>
