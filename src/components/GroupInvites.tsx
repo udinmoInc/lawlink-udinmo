@@ -19,36 +19,23 @@ const GroupInvites: React.FC = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      // First get the pending invites
+      const { data: inviteData, error: inviteError } = await supabase
         .from('group_invites')
-        .select(`
-          id,
-          status,
-          created_at,
-          group_id,
-          inviter_id,
-          invitee_id,
-          group:group_id (
-            id,
-            title,
-            description,
-            cover_image_url,
-            is_private,
-            created_at,
-            updated_at
-          ),
-          inviter:inviter_id (
-            id,
-            username,
-            full_name,
-            avatar_url
-          )
-        `)
+        .select('*, groups(*), profiles!group_invites_inviter_id_fkey(*)')
         .eq('invitee_id', user.id)
         .eq('status', 'pending');
 
-      if (error) throw error;
-      setInvites(data);
+      if (inviteError) throw inviteError;
+
+      // Transform the data to match the expected structure
+      const processedInvites = inviteData?.map(invite => ({
+        ...invite,
+        group: invite.groups,
+        inviter: invite.profiles
+      })) || [];
+
+      setInvites(processedInvites);
     } catch (error: any) {
       console.error('Error fetching invites:', error);
       toast.error('Failed to load invites');
@@ -124,4 +111,4 @@ const GroupInvites: React.FC = () => {
   );
 };
 
-export default GroupInvites
+export default GroupInvites;

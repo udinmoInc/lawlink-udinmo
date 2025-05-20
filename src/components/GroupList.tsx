@@ -19,32 +19,41 @@ const GroupList: React.FC = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      // First, get the groups the user is a member of
+      const { data: memberData, error: memberError } = await supabase
         .from('group_members')
-        .select(`
-          group:group_id (
-            id,
-            title,
-            description,
-            cover_image_url,
-            is_private,
-            created_at,
-            updated_at,
-            members:group_members (
-              id,
-              user_id,
-              role,
-              created_at
-            )
-          )
-        `)
+        .select('group_id')
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (memberError) throw memberError;
 
-      const processedGroups = data?.map(item => ({
-        ...item.group,
-        members: item.group.members
+      const groupIds = memberData.map(m => m.group_id);
+
+      if (groupIds.length === 0) {
+        setGroups([]);
+        return;
+      }
+
+      // Then fetch the full group details and member counts
+      const { data: groupData, error: groupError } = await supabase
+        .from('groups')
+        .select(`
+          id,
+          title,
+          description,
+          cover_image_url,
+          is_private,
+          created_at,
+          updated_at,
+          members:group_members(count)
+        `)
+        .in('id', groupIds);
+
+      if (groupError) throw groupError;
+
+      const processedGroups = groupData?.map(group => ({
+        ...group,
+        members: group.members || []
       })) || [];
 
       setGroups(processedGroups);
@@ -97,7 +106,7 @@ const GroupList: React.FC = () => {
                 )}
                 <div className="mt-4 flex items-center text-sm text-gray-500">
                   <Users className="h-4 w-4 mr-1" />
-                  <span>{group.members?.length || 0} members</span>
+                  <span>{(group.members as any)[0]?.count || 0} members</span>
                 </div>
               </div>
             </div>
@@ -114,4 +123,4 @@ const GroupList: React.FC = () => {
   );
 };
 
-export default GroupList
+export default GroupList;
