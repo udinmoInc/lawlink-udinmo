@@ -15,7 +15,7 @@ const MobileNavbar: React.FC = () => {
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50">
-      <div className="flex justify-around items-center h-16">
+      <div className="flex justify-around items-center h-14">
         {navigationItems.map((item) => (
           <Link
             key={item.path}
@@ -23,11 +23,11 @@ const MobileNavbar: React.FC = () => {
             className={`flex flex-col items-center justify-center w-full h-full ${
               location.pathname === item.path 
                 ? 'text-blue-500' 
-                : 'text-gray-500 hover:text-gray-900'
+                : 'text-gray-500 active:text-gray-900'
             }`}
           >
-            <item.icon size={22} />
-            <span className="text-xs mt-1">{item.label}</span>
+            <item.icon size={20} />
+            <span className="text-[10px] mt-0.5">{item.label}</span>
           </Link>
         ))}
       </div>
