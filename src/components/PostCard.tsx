@@ -17,24 +17,27 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(post.user_has_liked || false);
-  const [likesCount, setLikesCount] = useState(Number(post.likes_count) || 0);
+  const [likesCount, setLikesCount] = useState(post.likes_count || 0);
+  const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
 
   const toggleComments = async () => {
     if (!showComments) {
       setIsLoading(true);
-      const { data, error } = await supabase
-        .from('comments')
-        .select('*, profiles(*)')
-        .eq('post_id', post.id)
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from('comments')
+          .select('*, profiles(*)')
+          .eq('post_id', post.id)
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        toast.error('Failed to load comments');
-        console.error(error);
-      } else {
+        if (error) throw error;
         setComments(data as (Comment & { profiles: Profile })[]);
+      } catch (error: any) {
+        console.error('Error loading comments:', error);
+        toast.error('Failed to load comments');
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
     setShowComments(!showComments);
   };
@@ -64,14 +67,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
 
       setComments([newCommentData[0] as (Comment & { profiles: Profile }), ...comments]);
       setNewComment('');
-
-      const { error: updateError } = await supabase
-        .from('posts')
-        .update({ comments_count: (Number(post.comments_count) || 0) + 1 })
-        .eq('id', post.id);
-
-      if (updateError) throw updateError;
-
+      setCommentsCount(prev => prev + 1);
       onPostUpdate();
     } catch (error: any) {
       toast.error('Failed to add comment');
@@ -99,12 +95,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
 
         setIsLiked(false);
         setLikesCount(prev => prev - 1);
-
-        await supabase
-          .from('posts')
-          .update({ likes_count: likesCount - 1 })
-          .eq('id', post.id);
-
       } else {
         const { error } = await supabase
           .from('likes')
@@ -114,11 +104,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
 
         setIsLiked(true);
         setLikesCount(prev => prev + 1);
-
-        await supabase
-          .from('posts')
-          .update({ likes_count: likesCount + 1 })
-          .eq('id', post.id);
       }
     } catch (error: any) {
       toast.error(isLiked ? 'Failed to unlike post' : 'Failed to like post');
@@ -127,7 +112,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6 transition-all duration-300 hover:shadow-md">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
@@ -143,7 +128,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
               </div>
             )}
             <div className="ml-3">
-              <p className="font-semibold text-gray-900">{post.profiles?.full_name || post.profiles?.username}</p>
+              <p className="font-semibold text-gray-900">
+                {post.profiles?.full_name || post.profiles?.username}
+              </p>
               <p className="text-xs text-gray-500">
                 {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
               </p>
@@ -175,7 +162,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
 
           <button onClick={toggleComments} className="flex items-center hover:text-blue-500">
             <MessageCircle size={20} />
-            <span className="ml-2 text-sm">{Number(post.comments_count) || 0}</span>
+            <span className="ml-2 text-sm">{commentsCount}</span>
           </button>
 
           <button className="flex items-center hover:text-green-500">
@@ -189,7 +176,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
           {user && (
             <form onSubmit={handleAddComment} className="mb-4">
               <div className="flex">
-                
                 <input
                   type="text"
                   value={newComment}
