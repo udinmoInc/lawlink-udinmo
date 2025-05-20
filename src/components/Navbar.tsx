@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Bell, Mail, Settings, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import SearchBar from './SearchBar';
-import NotificationCenter from './NotificationCenter';
 
 const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -17,27 +16,14 @@ const Navbar: React.FC = () => {
           SocialApp
         </Link>
 
-        {/* Search Bar */}
-        <div className="flex-1 max-w-xl px-4">
+        {/* Search Bar - Only show on desktop */}
+        <div className="hidden md:block flex-1 max-w-xl px-4">
           <SearchBar />
         </div>
 
         {/* Right Navigation */}
         <div className="flex items-center gap-2">
-          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full relative">
-            <Bell size={20} />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
-          
-          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full relative">
-            <Mail size={20} />
-          </button>
-
-          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full">
-            <Settings size={20} />
-          </button>
-
-          {user && (
+          {user ? (
             <div className="relative">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -46,7 +32,7 @@ const Navbar: React.FC = () => {
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
                   {user.email?.[0].toUpperCase()}
                 </div>
-                <ChevronDown size={16} className="text-gray-600" />
+                <ChevronDown size={16} className="text-gray-600 hidden md:block" />
               </button>
 
               {showProfileMenu && (
@@ -70,6 +56,13 @@ const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
+          ) : (
+            <Link
+              to="/login"
+              className="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors text-sm font-medium"
+            >
+              Sign In
+            </Link>
           )}
         </div>
       </div>

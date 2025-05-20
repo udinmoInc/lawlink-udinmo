@@ -14,6 +14,8 @@ import ProfilePage from './pages/ProfilePage';
 import CreatePostPage from './pages/CreatePostPage';
 import GroupsPage from './pages/GroupsPage';
 import PostPage from './pages/PostPage';
+import ExplorePage from './pages/ExplorePage';
+import NotificationsPage from './pages/NotificationsPage';
 
 const AppContent = () => {
   const { user } = useAuth();
@@ -38,13 +40,15 @@ const AppContent = () => {
         </div>
 
         {/* Main Content */}
-        <div className={`flex-1 ${user ? 'md:ml-[275px] md:mr-[320px]' : 'md:ml-[275px] md:mr-[320px]'} min-h-screen`}>
+        <div className={`flex-1 ${user ? 'md:ml-[275px] md:mr-[320px]' : ''} min-h-screen pb-16 md:pb-0`}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/create" element={<CreatePostPage />} />
             <Route path="/groups" element={<GroupsPage />} />
             <Route path="/post/:id" element={<PostPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
           </Routes>
         </div>
 
@@ -55,7 +59,7 @@ const AppContent = () => {
       </div>
 
       {/* Mobile Navigation */}
-      {user && <MobileNavbar />}
+      <MobileNavbar />
 
       <Toaster 
         position="top-right"

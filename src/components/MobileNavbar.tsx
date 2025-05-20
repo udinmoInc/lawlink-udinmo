@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, PlusSquare, Mail, User } from 'lucide-react';
+import { Home, Search, PlusSquare, Bell, User } from 'lucide-react';
 
 const MobileNavbar: React.FC = () => {
   const location = useLocation();
 
   const navigationItems = [
     { icon: Home, label: 'Home', path: '/' },
-    { icon: Search, label: 'Explore', path: '/explore' },
-    { icon: PlusSquare, label: 'Post', path: '/create' },
-    { icon: Mail, label: 'Messages', path: '/messages' },
+    { icon: Search, label: 'Search', path: '/explore' },
+    { icon: PlusSquare, label: 'Create', path: '/create' },
+    { icon: Bell, label: 'Notifications', path: '/notifications' },
     { icon: User, label: 'Profile', path: '/profile' },
   ];
 
@@ -20,11 +20,13 @@ const MobileNavbar: React.FC = () => {
           <Link
             key={item.path}
             to={item.path}
-            className={`flex flex-col items-center justify-center flex-1 h-full ${
-              location.pathname === item.path ? 'text-blue-500' : 'text-gray-500'
+            className={`flex flex-col items-center justify-center w-full h-full ${
+              location.pathname === item.path 
+                ? 'text-blue-500' 
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            <item.icon size={24} />
+            <item.icon size={22} />
             <span className="text-xs mt-1">{item.label}</span>
           </Link>
         ))}
