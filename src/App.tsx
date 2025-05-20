@@ -24,23 +24,15 @@ function App() {
           <Navbar />
           <div className="container mx-auto px-4">
             <div className="flex gap-6 relative">
-              {/* Left Sidebar - Visible on medium and large screens */}
-              <div className="hidden md:block w-64 fixed left-4 top-16 bottom-0">
+              {/* Left Sidebar - Only visible on large screens */}
+              <div className="hidden lg:block w-64 fixed left-4 top-16 bottom-0">
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full overflow-y-auto">
-                  <div className="md:hidden lg:block">
-                    <Sidebar />
-                  </div>
-                  <div className="hidden md:block lg:hidden p-4 space-y-4">
-                    {/* Placeholder blocks for medium screens */}
-                    {[...Array(8)].map((_, i) => (
-                      <div key={i} className="h-12 bg-gray-50 rounded-lg animate-pulse"></div>
-                    ))}
-                  </div>
+                  <Sidebar />
                 </div>
               </div>
 
               {/* Main Content */}
-              <main className="w-full md:ml-72 lg:ml-72 lg:mr-88 pt-16 pb-16 md:pb-6 md:max-w-[600px] mx-auto">
+              <main className="w-full lg:ml-72 lg:mr-88 pt-16 pb-16 lg:pb-6 lg:max-w-[600px] mx-auto">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/login" element={<LoginPage />} />
@@ -63,8 +55,10 @@ function App() {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
-          <MobileNavbar />
+          {/* Mobile Navigation - Visible on mobile and medium screens */}
+          <div className="lg:hidden">
+            <MobileNavbar />
+          </div>
 
           <Toaster 
             position="top-right"
