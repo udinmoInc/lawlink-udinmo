@@ -58,7 +58,7 @@ const MainFeed: React.FC = () => {
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
       {/* Feed Tabs */}
-      <div className="flex border-b border-gray-100 sticky top-0 bg-white z-10 rounded-t-xl">
+      <div className="flex border-b border-gray-100 bg-white z-10 rounded-t-xl">
         <button
           onClick={() => setActiveTab('for-you')}
           className={`flex-1 py-3 text-center font-medium text-sm hover:bg-gray-50 transition-colors ${
@@ -89,7 +89,7 @@ const MainFeed: React.FC = () => {
 
       {/* Post Creation */}
       {user && (
-        <div className="px-4 py-3 border-b border-gray-100 sticky top-[49px] bg-white z-10">
+        <div className="px-4 py-3 border-b border-gray-100 bg-white z-10">
           <CreatePostForm onPostCreated={fetchPosts} />
           {showPostTools && (
             <div className="flex gap-4 mt-3 overflow-x-auto pb-2 scrollbar-hide">

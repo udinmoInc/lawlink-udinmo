@@ -58,18 +58,6 @@ function App() {
                 </Routes>
               </main>
 
-              {/* Right Sidebar - Only visible between 768px and 1023px */}
-              <div className="hidden md:block lg:hidden w-56 fixed right-4 top-16 bottom-0">
-                <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full overflow-y-auto">
-                  <div className="p-4 space-y-4">
-                    {/* Placeholder blocks */}
-                    {[...Array(4)].map((_, i) => (
-                      <div key={i} className="h-24 bg-gray-50 rounded-lg"></div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
               {/* Right Sidebar - Only visible above 1024px */}
               <div className="hidden lg:block w-80 fixed right-4 top-16 bottom-0">
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full overflow-y-auto">
