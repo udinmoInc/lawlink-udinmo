@@ -16,11 +16,11 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-[#15202b] text-white">
           <Navbar />
           <div className="flex">
             {/* Desktop Sidebar */}
-            <div className="hidden md:block w-80 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-200 overflow-y-auto">
+            <div className="hidden md:block w-80 fixed left-0 top-16 bottom-0 bg-[#1a2734] border-r border-[#38444d] overflow-y-auto">
               <Sidebar />
             </div>
 
@@ -37,7 +37,16 @@ function App() {
               </Routes>
             </div>
           </div>
-          <Toaster position="top-right" />
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#1a2734',
+                color: '#fff',
+                border: '1px solid #38444d'
+              }
+            }}
+          />
         </div>
       </AuthProvider>
     </Router>
