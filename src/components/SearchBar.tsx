@@ -117,16 +117,16 @@ const SearchBar: React.FC = () => {
           value={query}
           onChange={handleInputChange}
           placeholder="Search posts, @users, or #tags"
-          className="w-full pl-10 pr-4 py-2 bg-[#253341] border border-[#38444d] rounded-full focus:outline-none focus:ring-2 focus:ring-[#1d9bf0] text-white placeholder-gray-400"
+          className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 placeholder-gray-500"
         />
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
       </div>
 
       {showResults && (query.trim() || loading) && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a2734] rounded-lg shadow-lg border border-[#38444d] max-h-96 overflow-y-auto z-50">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50">
           {loading ? (
             <div className="p-4 text-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500 mx-auto"></div>
             </div>
           ) : results.length > 0 ? (
             <div className="py-2">
@@ -137,7 +137,7 @@ const SearchBar: React.FC = () => {
                   className="flex items-center px-4 py-2 hover:bg-gray-50"
                   onClick={() => setShowResults(false)}
                 >
-                  {result.type === 'user' && <AtSign size={18} className="text-blue-500 mr-2" />}
+                  {result.type === 'user' && <AtSign size={18} className="text-primary-500 mr-2" />}
                   {result.type === 'tag' && <Hash size={18} className="text-green-500 mr-2" />}
                   {result.type === 'post' && <Search size={18} className="text-purple-500 mr-2" />}
                   <div>
