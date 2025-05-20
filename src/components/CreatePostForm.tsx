@@ -51,22 +51,14 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onPostCreated }) => {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-        <p className="text-center text-gray-500">Please sign in to create a post</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
       <form onSubmit={handleSubmit}>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="What's on your mind?"
-          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           rows={3}
           disabled={isSubmitting}
         />
@@ -94,7 +86,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onPostCreated }) => {
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="Add image URL"
-                className="pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                className="pl-9 pr-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
               />
               <Image className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             </div>
