@@ -76,19 +76,19 @@ const ProfilePage: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8 mt-16 text-center">
+      <div className="max-w-4xl mx-auto px-4 py-8 text-center">
         <h2 className="text-2xl font-bold text-gray-800">Please sign in to view your profile</h2>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 mt-16">
+    <div className="max-w-4xl mx-auto px-4 py-6">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
-        <div className="h-40 bg-gradient-to-r from-blue-400 to-purple-500"></div>
-        <div className="p-6 relative">
-          <div className="absolute -top-16 left-6">
-            <div className="h-32 w-32 rounded-full border-4 border-white bg-white overflow-hidden">
+        <div className="h-32 md:h-40 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+        <div className="p-4 md:p-6 relative">
+          <div className="absolute -top-16 left-4 md:left-6">
+            <div className="h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-white bg-white overflow-hidden">
               {profile?.avatar_url ? (
                 <img
                   src={profile.avatar_url}
@@ -103,8 +103,8 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="ml-36">
-            <h1 className="text-2xl font-bold text-gray-900">{profile?.full_name || 'User'}</h1>
+          <div className="ml-32 md:ml-40 pt-2">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">{profile?.full_name || 'User'}</h1>
             <p className="text-gray-500">@{profile?.username || user.email?.split('@')[0]}</p>
 
             {profile?.bio && <p className="mt-2 text-gray-700">{profile.bio}</p>}
