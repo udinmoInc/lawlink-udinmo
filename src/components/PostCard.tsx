@@ -164,21 +164,21 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
             </div>
           )}
           <div className="ml-3">
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-white">
               {post.profiles?.full_name || post.profiles?.username}
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-400">
               {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
             </p>
           </div>
         </div>
-        <button className="text-gray-400 hover:text-gray-600">
+        <button className="text-gray-400 hover:text-gray-300">
           <MoreHorizontal size={20} />
         </button>
       </div>
 
       <div className="mb-4">
-        <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
+        <p className="text-white whitespace-pre-line">{post.content}</p>
       </div>
 
       {post.image_url && (
@@ -187,7 +187,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
         </div>
       )}
 
-      <div className="flex items-center justify-between text-gray-500 border-t border-gray-100 pt-3">
+      <div className="flex items-center justify-between text-gray-400 border-t border-[#38444d] pt-3">
         <button
           onClick={handleLike}
           className={`flex items-center ${isLiked ? 'text-red-500' : 'hover:text-red-500'}`}
@@ -196,7 +196,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
           <span className="ml-2 text-sm">{likesCount}</span>
         </button>
 
-        <button onClick={toggleComments} className="flex items-center hover:text-blue-500">
+        <button onClick={toggleComments} className="flex items-center hover:text-[#1d9bf0]">
           <MessageCircle size={20} />
           <span className="ml-2 text-sm">{commentsCount}</span>
         </button>
@@ -204,30 +204,30 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
         <div className="relative">
           <button 
             onClick={() => setShowShareMenu(!showShareMenu)}
-            className="flex items-center hover:text-green-500"
+            className="flex items-center hover:text-[#1d9bf0]"
           >
             <Share2 size={20} />
           </button>
 
           {showShareMenu && (
-            <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
+            <div className="absolute bottom-full right-0 mb-2 w-48 bg-[#1a2734] rounded-lg shadow-lg border border-[#38444d] py-1 z-10">
               <button
                 onClick={() => handleShare('copy')}
-                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
+                className="w-full px-4 py-2 text-left hover:bg-[#253341] flex items-center text-white"
               >
                 <LinkIcon size={16} className="mr-2" />
                 Copy Link
               </button>
               <button
                 onClick={() => handleShare('twitter')}
-                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
+                className="w-full px-4 py-2 text-left hover:bg-[#253341] flex items-center text-white"
               >
                 <Twitter size={16} className="mr-2" />
                 Share on Twitter
               </button>
               <button
                 onClick={() => handleShare('facebook')}
-                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
+                className="w-full px-4 py-2 text-left hover:bg-[#253341] flex items-center text-white"
               >
                 <Facebook size={16} className="mr-2" />
                 Share on Facebook
@@ -240,7 +240,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
   );
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
+    <div className="bg-[#1a2734] rounded-xl border border-[#38444d] overflow-hidden mb-6 hover:bg-[#1e2732] transition-colors">
       <div className="p-4">
         {isPostPage ? (
           <PostContent />
@@ -252,7 +252,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
       </div>
 
       {showComments && (
-        <div className="bg-gray-50 p-4 border-t border-gray-100">
+        <div className="bg-[#1e2732] p-4 border-t border-[#38444d]">
           {user && (
             <form onSubmit={handleAddComment} className="mb-4">
               <div className="flex">
@@ -261,12 +261,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Add a comment..."
-                  className="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-grow px-4 py-2 bg-[#253341] border border-[#38444d] rounded-l-lg focus:outline-none focus:ring-2 focus:ring-[#1d9bf0] text-white placeholder-gray-400"
                   disabled={isLoading}
                 />
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 disabled:bg-blue-300"
+                  className="px-4 py-2 bg-[#1d9bf0] text-white rounded-r-lg hover:bg-[#1a8cd8] disabled:bg-[#1a8cd8] disabled:opacity-50"
                   disabled={isLoading || !newComment.trim()}
                 >
                   Post
@@ -277,7 +277,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
 
           {isLoading ? (
             <div className="text-center py-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1d9bf0] mx-auto"></div>
             </div>
           ) : comments.length > 0 ? (
             <div className="space-y-4">
@@ -294,22 +294,22 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
                       {comment.profiles?.username?.charAt(0).toUpperCase() || 'U'}
                     </div>
                   )}
-                  <div className="flex-1 bg-white p-3 rounded-lg shadow-sm">
+                  <div className="flex-1 bg-[#253341] p-3 rounded-lg">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="font-medium text-sm text-gray-900">
+                      <span className="font-medium text-sm text-white">
                         {comment.profiles?.full_name || comment.profiles?.username}
                       </span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-400">
                         {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-800">{comment.content}</p>
+                    <p className="text-sm text-gray-200">{comment.content}</p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-500 py-4">No comments yet. Be the first to comment!</p>
+            <p className="text-center text-gray-400 py-4">No comments yet. Be the first to comment!</p>
           )}
         </div>
       )}

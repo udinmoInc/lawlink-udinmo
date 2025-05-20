@@ -10,12 +10,12 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-200 fixed w-full top-0 z-10 md:block hidden">
+      <nav className="bg-[#1a2734] border-b border-[#38444d] fixed w-full top-0 z-10 md:block hidden">
         <div className="max-w-[1800px] mx-auto px-4">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center">
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold text-[#1d9bf0]">
                   SocialApp
                 </span>
               </Link>
@@ -96,7 +96,7 @@ const Navbar: React.FC = () => {
       </nav>
 
       {/* Mobile bottom navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a2734] border-t border-[#38444d] z-10">
         <div className="flex justify-around items-center h-16">
           <Link
             to="/"
