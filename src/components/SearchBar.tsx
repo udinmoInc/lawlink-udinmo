@@ -117,13 +117,13 @@ const SearchBar: React.FC = () => {
           value={query}
           onChange={handleInputChange}
           placeholder="Search posts, @users, or #tags"
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+          className="w-full pl-10 pr-4 py-2 bg-[#253341] border border-[#38444d] rounded-full focus:outline-none focus:ring-2 focus:ring-[#1d9bf0] text-white placeholder-gray-400"
         />
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
       </div>
 
       {showResults && (query.trim() || loading) && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a2734] rounded-lg shadow-lg border border-[#38444d] max-h-96 overflow-y-auto z-50">
           {loading ? (
             <div className="p-4 text-center">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
