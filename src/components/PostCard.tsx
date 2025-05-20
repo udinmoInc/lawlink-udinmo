@@ -17,8 +17,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(post.user_has_liked || false);
-  const [likesCount, setLikesCount] = useState(post.likes_count || 0);
-  const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
+  const [likesCount, setLikesCount] = useState(typeof post.likes_count === 'number' ? post.likes_count : 0);
+  const [commentsCount, setCommentsCount] = useState(typeof post.comments_count === 'number' ? post.comments_count : 0);
 
   const toggleComments = async () => {
     if (!showComments) {

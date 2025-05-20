@@ -25,22 +25,26 @@ const InviteGroupMember: React.FC<InviteGroupMemberProps> = ({ groupId, groupTit
         .from('profiles')
         .select('id')
         .eq('username', email)
-        .single();
+        .limit(1);
 
-      if (userError || !inviteeData) {
+      if (userError) throw userError;
+      
+      if (!inviteeData || inviteeData.length === 0) {
         toast.error('User not found');
         return;
       }
+
+      const inviteeId = inviteeData[0].id;
 
       // Check if user is already a member
       const { data: existingMember, error: memberError } = await supabase
         .from('group_members')
         .select('id')
         .eq('group_id', groupId)
-        .eq('user_id', inviteeData.id)
-        .single();
+        .eq('user_id', inviteeId)
+        .limit(1);
 
-      if (existingMember) {
+      if (existingMember && existingMember.length > 0) {
         toast.error('User is already a member of this group');
         return;
       }
@@ -50,11 +54,11 @@ const InviteGroupMember: React.FC<InviteGroupMemberProps> = ({ groupId, groupTit
         .from('group_invites')
         .select('id, status')
         .eq('group_id', groupId)
-        .eq('invitee_id', inviteeData.id)
-        .single();
+        .eq('invitee_id', inviteeId)
+        .limit(1);
 
-      if (existingInvite) {
-        if (existingInvite.status === 'pending') {
+      if (existingInvite && existingInvite.length > 0) {
+        if (existingInvite[0].status === 'pending') {
           toast.error('User already has a pending invite');
         } else {
           // Create new invite if previous one was declined
@@ -64,7 +68,7 @@ const InviteGroupMember: React.FC<InviteGroupMemberProps> = ({ groupId, groupTit
               {
                 group_id: groupId,
                 inviter_id: user.id,
-                invitee_id: inviteeData.id,
+                invitee_id: inviteeId,
                 status: 'pending'
               }
             ]);
@@ -83,7 +87,7 @@ const InviteGroupMember: React.FC<InviteGroupMemberProps> = ({ groupId, groupTit
           {
             group_id: groupId,
             inviter_id: user.id,
-            invitee_id: inviteeData.id,
+            invitee_id: inviteeId,
             status: 'pending'
           }
         ]);
@@ -95,7 +99,7 @@ const InviteGroupMember: React.FC<InviteGroupMemberProps> = ({ groupId, groupTit
         .from('notifications')
         .insert([
           {
-            user_id: inviteeData.id,
+            user_id: inviteeId,
             type: 'group_invite',
             data: {
               group_id: groupId,

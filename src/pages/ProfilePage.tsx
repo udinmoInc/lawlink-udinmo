@@ -59,9 +59,11 @@ const ProfilePage: React.FC = () => {
 
       if (error) throw error;
 
-      // Process the data to handle the user_has_liked field
+      // Process the data to handle the counts and user_has_liked field
       const processedPosts = data.map((post: any) => ({
         ...post,
+        likes_count: post.likes_count?.[0]?.count || 0,
+        comments_count: post.comments_count?.[0]?.count || 0,
         user_has_liked: post.user_has_liked?.length > 0,
       }));
 
