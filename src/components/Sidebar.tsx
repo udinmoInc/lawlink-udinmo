@@ -1,120 +1,80 @@
-import React, { useEffect, useState } from 'react';
-import { supabase, type Group, type Profile } from '../lib/supabase';
-import { Users } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import {
+  Home,
+  Search,
+  Bell,
+  Mail,
+  Bookmark,
+  Briefcase,
+  Users,
+  User,
+  PenSquare,
+  Menu
+} from 'lucide-react';
 
 const Sidebar: React.FC = () => {
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [seniorMembers, setSeniorMembers] = useState<Profile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const location = useLocation();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      // Fetch top 5 groups
-      const { data: groupsData } = await supabase
-        .from('groups')
-        .select('*')
-        .limit(5)
-        .order('created_at', { ascending: false });
-
-      if (groupsData) {
-        setGroups(groupsData);
-      }
-
-      // Fetch 10 senior members (older accounts)
-      const { data: membersData } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: true })
-        .limit(10);
-
-      if (membersData) {
-        setSeniorMembers(membersData);
-      }
-    } catch (error) {
-      console.error('Error fetching sidebar data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="p-4">
-        <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-        </div>
-      </div>
-    );
-  }
+  const navigationItems = [
+    { icon: Home, label: 'Home', path: '/' },
+    { icon: Search, label: 'Explore', path: '/explore' },
+    { icon: Bell, label: 'Notifications', path: '/notifications' },
+    { icon: Mail, label: 'Messages', path: '/messages' },
+    { icon: Bookmark, label: 'Bookmarks', path: '/bookmarks' },
+    { icon: Briefcase, label: 'Jobs', path: '/jobs' },
+    { icon: Users, label: 'Communities', path: '/communities' },
+    { icon: User, label: 'Profile', path: '/profile' },
+  ];
 
   return (
-    <div className="p-4 space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Popular Groups</h2>
-        <div className="space-y-3">
-          {groups.map((group) => (
-            <Link
-              key={group.id}
-              to={`/groups/${group.id}`}
-              className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              {group.cover_image_url ? (
-                <img
-                  src={group.cover_image_url}
-                  alt={group.title}
-                  className="w-10 h-10 rounded-lg object-cover"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
-                  <Users className="text-white" size={20} />
-                </div>
-              )}
-              <div className="ml-3">
-                <h3 className="font-medium text-gray-900">{group.title}</h3>
-                {group.description && (
-                  <p className="text-sm text-gray-500 truncate">{group.description}</p>
-                )}
-              </div>
-            </Link>
-          ))}
-        </div>
+    <div className="h-full flex flex-col justify-between p-4">
+      <div className="space-y-2">
+        {/* Mobile Menu Button */}
+        <button className="md:hidden p-2 hover:bg-gray-100 rounded-full">
+          <Menu size={24} />
+        </button>
+
+        {/* Navigation Items */}
+        {navigationItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`flex items-center gap-4 p-3 rounded-full hover:bg-gray-100 transition-colors ${
+              location.pathname === item.path ? 'font-bold' : ''
+            }`}
+          >
+            <item.icon size={24} />
+            <span className="text-xl">{item.label}</span>
+          </Link>
+        ))}
+
+        {/* Post Button */}
+        <button className="w-full mt-4 bg-blue-500 text-white rounded-full py-3 px-6 font-bold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
+          <PenSquare size={20} />
+          <span>Post</span>
+        </button>
       </div>
 
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Senior Members</h2>
-        <div className="space-y-3">
-          {seniorMembers.map((member) => (
-            <Link
-              key={member.id}
-              to={`/profile/${member.id}`}
-              className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              {member.avatar_url ? (
-                <img
-                  src={member.avatar_url}
-                  alt={member.username}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
-                  {member.username.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <div className="ml-3">
-                <h3 className="font-medium text-gray-900">{member.full_name || member.username}</h3>
-                <p className="text-xs text-gray-500">Member since {new Date(member.created_at).getFullYear()}</p>
-              </div>
-            </Link>
-          ))}
+      {/* User Profile */}
+      {user && (
+        <div className="mt-auto pt-4 border-t border-gray-100">
+          <Link
+            to="/profile"
+            className="flex items-center gap-3 p-3 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+              {user.email?.[0].toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold truncate">{user.email?.split('@')[0]}</p>
+              <p className="text-sm text-gray-500 truncate">@{user.email?.split('@')[0]}</p>
+            </div>
+          </Link>
         </div>
-      </div>
+      )}
     </div>
   );
 };
