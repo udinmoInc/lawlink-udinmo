@@ -62,11 +62,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
 
       if (commentError) throw commentError;
 
-      // Update comments list with the new comment
       setComments([newCommentData[0] as (Comment & { profiles: Profile }), ...comments]);
       setNewComment('');
 
-      // Update post's comment count
       const { error: updateError } = await supabase
         .from('posts')
         .update({ comments_count: (Number(post.comments_count) || 0) + 1 })
@@ -91,7 +89,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
 
     try {
       if (isLiked) {
-        // Unlike
         const { error } = await supabase
           .from('likes')
           .delete()
@@ -103,14 +100,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
         setIsLiked(false);
         setLikesCount(prev => prev - 1);
 
-        // Update post's like count
         await supabase
           .from('posts')
           .update({ likes_count: likesCount - 1 })
           .eq('id', post.id);
 
       } else {
-        // Like
         const { error } = await supabase
           .from('likes')
           .insert([{ post_id: post.id, user_id: user.id }]);
@@ -120,7 +115,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
         setIsLiked(true);
         setLikesCount(prev => prev + 1);
 
-        // Update post's like count
         await supabase
           .from('posts')
           .update({ likes_count: likesCount + 1 })
@@ -137,9 +131,17 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
-              {post.profiles?.username.charAt(0).toUpperCase() || 'U'}
-            </div>
+            {post.profiles?.avatar_url ? (
+              <img
+                src={post.profiles.avatar_url}
+                alt={post.profiles.username}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                {post.profiles?.username.charAt(0).toUpperCase() || 'U'}
+              </div>
+            )}
             <div className="ml-3">
               <p className="font-semibold text-gray-900">{post.profiles?.full_name || post.profiles?.username}</p>
               <p className="text-xs text-gray-500">
@@ -187,6 +189,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
           {user && (
             <form onSubmit={handleAddComment} className="mb-4">
               <div className="flex">
+                
                 <input
                   type="text"
                   value={newComment}
@@ -214,9 +217,17 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
             <div className="space-y-4">
               {comments.map((comment) => (
                 <div key={comment.id} className="flex space-x-3">
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs">
-                    {comment.profiles?.username.charAt(0).toUpperCase() || 'U'}
-                  </div>
+                  {comment.profiles?.avatar_url ? (
+                    <img
+                      src={comment.profiles.avatar_url}
+                      alt={comment.profiles.username}
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs">
+                      {comment.profiles?.username.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                  )}
                   <div className="flex-1 bg-white p-3 rounded-lg shadow-sm">
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-medium text-sm text-gray-900">

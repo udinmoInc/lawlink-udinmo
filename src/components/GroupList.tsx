@@ -1,0 +1,106 @@
+import React, { useState, useEffect } from 'react';
+import { supabase, type Group, type GroupMember } from '../lib/supabase';
+import { useAuth } from '../context/AuthContext';
+import { Users, Lock, Globe } from 'lucide-react';
+import toast from 'react-hot-toast';
+
+const GroupList: React.FC = () => {
+  const { user } = useAuth();
+  const [groups, setGroups] = useState<(Group & { members: GroupMember[] })[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserGroups();
+    }
+  }, [user]);
+
+  const fetchUserGroups = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('group_members')
+        .select(`
+          groups (
+            *,
+            members:group_members(*)
+          )
+        `)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      const processedGroups = data?.map(item => ({
+        ...item.groups,
+        members: item.groups.members
+      })) || [];
+
+      setGroups(processedGroups);
+    } catch (error: any) {
+      console.error('Error fetching groups:', error);
+      toast.error('Failed to load groups');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold text-gray-900">Your Groups</h2>
+      {groups.length > 0 ? (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+          {groups.map((group) => (
+            <div
+              key={group.id}
+              className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+            >
+              {group.cover_image_url && (
+                <div className="h-32 bg-gray-100">
+                  <img
+                    src={group.cover_image_url}
+                    alt={group.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="p-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900">{group.title}</h3>
+                  {group.is_private ? (
+                    <Lock className="h-4 w-4 text-gray-500" />
+                  ) : (
+                    <Globe className="h-4 w-4 text-gray-500" />
+                  )}
+                </div>
+                {group.description && (
+                  <p className="mt-2 text-sm text-gray-600">{group.description}</p>
+                )}
+                <div className="mt-4 flex items-center text-sm text-gray-500">
+                  <Users className="h-4 w-4 mr-1" />
+                  <span>{group.members?.length || 0} members</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-8 bg-white rounded-lg border border-gray-200">
+          <Users className="h-12 w-12 mx-auto text-gray-400" />
+          <h3 className="mt-4 text-lg font-medium text-gray-900">No groups yet</h3>
+          <p className="mt-1 text-gray-500">Create or join a group to get started</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default GroupList;

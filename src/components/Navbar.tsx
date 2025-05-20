@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, User, LogOut, LogIn, PlusSquare, Search } from 'lucide-react';
+import { Home, User, LogOut, LogIn, PlusSquare, Search, Users } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -48,6 +48,16 @@ const Navbar: React.FC = () => {
 
                 {user ? (
                   <>
+                    <Link
+                      to="/groups"
+                      className={`px-3 py-2 rounded-md text-sm font-medium ${
+                        location.pathname === '/groups'
+                          ? 'text-blue-600'
+                          : 'text-gray-500 hover:text-blue-600'
+                      }`}
+                    >
+                      <Users className="h-6 w-6" />
+                    </Link>
                     <Link
                       to="/create"
                       className={`px-3 py-2 rounded-md text-sm font-medium ${
@@ -108,6 +118,15 @@ const Navbar: React.FC = () => {
 
           {user ? (
             <>
+              <Link
+                to="/groups"
+                className={`flex flex-col items-center justify-center flex-1 h-full ${
+                  location.pathname === '/groups' ? 'text-blue-600' : 'text-gray-500'
+                }`}
+              >
+                <Users className="h-6 w-6" />
+                <span className="text-xs mt-1">Groups</span>
+              </Link>
               <Link
                 to="/create"
                 className={`flex flex-col items-center justify-center flex-1 h-full ${
