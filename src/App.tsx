@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
-import RecentPosts from './components/RecentPosts';
+import TrendingSidebar from './components/TrendingSidebar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -40,7 +40,7 @@ function App() {
 
             {/* Desktop Right Sidebar */}
             <div className="hidden md:block w-64 fixed right-0 top-16 bottom-0 bg-white border-l border-gray-100 overflow-y-auto">
-              <RecentPosts />
+              <TrendingSidebar />
             </div>
           </div>
           <Toaster 
