@@ -123,3 +123,5 @@ const GroupInvites: React.FC = () => {
     </div>
   );
 };
+
+export default GroupInvites

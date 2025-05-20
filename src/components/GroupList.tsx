@@ -113,3 +113,5 @@ const GroupList: React.FC = () => {
     </div>
   );
 };
+
+export default GroupList
