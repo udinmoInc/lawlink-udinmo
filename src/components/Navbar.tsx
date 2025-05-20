@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, User, LogOut, LogIn, PlusSquare, Search, Users } from 'lucide-react';
+import { Home, User, LogOut, LogIn, PlusSquare, Users } from 'lucide-react';
+import SearchBar from './SearchBar';
 
 const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -10,7 +11,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav className="bg-white border-b border-gray-200 fixed w-full top-0 z-10 md:block hidden">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1800px] mx-auto px-4">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center">
@@ -20,17 +21,8 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
 
-            <div className="flex md:items-center md:ml-6">
-              <div className="relative mx-4">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Search..."
-                />
-              </div>
+            <div className="flex-1 max-w-2xl mx-8">
+              <SearchBar />
             </div>
 
             <div className="flex items-center">
@@ -145,13 +137,6 @@ const Navbar: React.FC = () => {
                 <User className="h-6 w-6" />
                 <span className="text-xs mt-1">Profile</span>
               </Link>
-              <button
-                onClick={signOut}
-                className="flex flex-col items-center justify-center flex-1 h-full text-gray-500"
-              >
-                <LogOut className="h-6 w-6" />
-                <span className="text-xs mt-1">Logout</span>
-              </button>
             </>
           ) : (
             <Link
