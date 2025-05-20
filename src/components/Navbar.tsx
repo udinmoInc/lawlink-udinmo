@@ -1,161 +1,80 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, User, LogOut, LogIn, PlusSquare, Users } from 'lucide-react';
+import { Bell, Mail, Settings, ChevronDown } from 'lucide-react';
 import SearchBar from './SearchBar';
+import NotificationCenter from './NotificationCenter';
 
 const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
-  const location = useLocation();
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   return (
-    <>
-      <nav className="bg-white border-b border-gray-200 fixed w-full top-0 z-10 md:block hidden">
-        <div className="max-w-[1800px] mx-auto px-4">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="flex-shrink-0 flex items-center">
-                <span className="text-2xl font-bold text-primary-600">
-                  SocialApp
-                </span>
-              </Link>
-            </div>
+    <nav className="h-16 bg-white border-b border-gray-100 fixed top-0 left-0 right-0 z-50">
+      <div className="h-full flex items-center justify-between px-4">
+        {/* Logo */}
+        <Link to="/" className="text-xl font-bold text-blue-500 flex items-center gap-2">
+          SocialApp
+        </Link>
 
-            <div className="flex-1 max-w-2xl mx-8">
-              <SearchBar />
-            </div>
-
-            <div className="flex items-center">
-              <div className="flex">
-                <Link
-                  to="/"
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    location.pathname === '/'
-                      ? 'text-primary-600'
-                      : 'text-gray-500 hover:text-primary-600'
-                  }`}
-                >
-                  <Home className="h-6 w-6" />
-                </Link>
-
-                {user ? (
-                  <>
-                    <Link
-                      to="/groups"
-                      className={`px-3 py-2 rounded-md text-sm font-medium ${
-                        location.pathname === '/groups'
-                          ? 'text-primary-600'
-                          : 'text-gray-500 hover:text-primary-600'
-                      }`}
-                    >
-                      <Users className="h-6 w-6" />
-                    </Link>
-                    <Link
-                      to="/create"
-                      className={`px-3 py-2 rounded-md text-sm font-medium ${
-                        location.pathname === '/create'
-                          ? 'text-primary-600'
-                          : 'text-gray-500 hover:text-primary-600'
-                      }`}
-                    >
-                      <PlusSquare className="h-6 w-6" />
-                    </Link>
-                    <Link
-                      to="/profile"
-                      className={`px-3 py-2 rounded-md text-sm font-medium ${
-                        location.pathname === '/profile'
-                          ? 'text-primary-600'
-                          : 'text-gray-500 hover:text-primary-600'
-                      }`}
-                    >
-                      <User className="h-6 w-6" />
-                    </Link>
-                    <button
-                      onClick={signOut}
-                      className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-red-600"
-                    >
-                      <LogOut className="h-6 w-6" />
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    to="/login"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      location.pathname === '/login'
-                        ? 'text-primary-600'
-                        : 'text-gray-500 hover:text-primary-600'
-                    }`}
-                  >
-                    <LogIn className="h-6 w-6" />
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
+        {/* Search Bar */}
+        <div className="flex-1 max-w-xl px-4">
+          <SearchBar />
         </div>
-      </nav>
 
-      {/* Mobile bottom navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
-        <div className="flex justify-around items-center h-16">
-          <Link
-            to="/"
-            className={`flex flex-col items-center justify-center flex-1 h-full ${
-              location.pathname === '/' ? 'text-primary-600' : 'text-gray-500'
-            }`}
-          >
-            <Home className="h-6 w-6" />
-            <span className="text-xs mt-1">Home</span>
-          </Link>
+        {/* Right Navigation */}
+        <div className="flex items-center gap-2">
+          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full relative">
+            <Bell size={20} />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          </button>
+          
+          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full relative">
+            <Mail size={20} />
+          </button>
 
-          {user ? (
-            <>
-              <Link
-                to="/groups"
-                className={`flex flex-col items-center justify-center flex-1 h-full ${
-                  location.pathname === '/groups' ? 'text-primary-600' : 'text-gray-500'
-                }`}
+          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full">
+            <Settings size={20} />
+          </button>
+
+          {user && (
+            <div className="relative">
+              <button
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="flex items-center gap-2 p-1 hover:bg-gray-100 rounded-full"
               >
-                <Users className="h-6 w-6" />
-                <span className="text-xs mt-1">Groups</span>
-              </Link>
-              <Link
-                to="/create"
-                className={`flex flex-col items-center justify-center flex-1 h-full ${
-                  location.pathname === '/create' ? 'text-primary-600' : 'text-gray-500'
-                }`}
-              >
-                <PlusSquare className="h-6 w-6" />
-                <span className="text-xs mt-1">Create</span>
-              </Link>
-              <Link
-                to="/profile"
-                className={`flex flex-col items-center justify-center flex-1 h-full ${
-                  location.pathname === '/profile' ? 'text-primary-600' : 'text-gray-500'
-                }`}
-              >
-                <User className="h-6 w-6" />
-                <span className="text-xs mt-1">Profile</span>
-              </Link>
-            </>
-          ) : (
-            <Link
-              to="/login"
-              className={`flex flex-col items-center justify-center flex-1 h-full ${
-                location.pathname === '/login' ? 'text-primary-600' : 'text-gray-500'
-              }`}
-            >
-              <LogIn className="h-6 w-6" />
-              <span className="text-xs mt-1">Login</span>
-            </Link>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                  {user.email?.[0].toUpperCase()}
+                </div>
+                <ChevronDown size={16} className="text-gray-600" />
+              </button>
+
+              {showProfileMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1">
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50"
+                    onClick={() => setShowProfileMenu(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setShowProfileMenu(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
-      </nav>
-
-      {/* Add padding to the bottom of the page on mobile */}
-      <div className="md:hidden h-16"></div>
-    </>
+      </div>
+    </nav>
   );
-}
+};
 
 export default Navbar;

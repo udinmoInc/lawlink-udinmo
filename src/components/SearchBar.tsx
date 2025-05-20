@@ -41,7 +41,6 @@ const SearchBar: React.FC = () => {
       let searchResults: SearchResult[] = [];
 
       if (searchQuery.startsWith('@')) {
-        // Search users
         const { data: users } = await supabase
           .from('profiles')
           .select('id, username, full_name')
@@ -58,7 +57,6 @@ const SearchBar: React.FC = () => {
           }));
         }
       } else if (searchQuery.startsWith('#')) {
-        // Search posts with hashtags
         const { data: posts } = await supabase
           .from('posts')
           .select('id, content')
@@ -75,7 +73,6 @@ const SearchBar: React.FC = () => {
           }));
         }
       } else {
-        // Search all posts
         const { data: posts } = await supabase
           .from('posts')
           .select('id, content')
@@ -110,47 +107,51 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div ref={wrapperRef} className="relative">
+    <div ref={wrapperRef} className="relative w-full">
       <div className="relative">
         <input
           type="text"
           value={query}
           onChange={handleInputChange}
           placeholder="Search posts, @users, or #tags"
-          className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 placeholder-gray-500"
+          className="w-full h-10 pl-10 pr-4 bg-gray-100 border border-transparent rounded-full focus:bg-white focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 text-sm"
         />
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
       </div>
 
       {showResults && (query.trim() || loading) && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
           {loading ? (
-            <div className="p-4 text-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500 mx-auto"></div>
+            <div className="p-2">
+              <div className="animate-pulse space-y-2">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-6 bg-gray-100 rounded"></div>
+                ))}
+              </div>
             </div>
           ) : results.length > 0 ? (
-            <div className="py-2">
+            <div className="py-1">
               {results.map((result) => (
                 <Link
                   key={result.id}
                   to={result.url}
-                  className="flex items-center px-4 py-2 hover:bg-gray-50"
+                  className="flex items-center px-3 py-2 hover:bg-gray-50"
                   onClick={() => setShowResults(false)}
                 >
-                  {result.type === 'user' && <AtSign size={18} className="text-primary-500 mr-2" />}
-                  {result.type === 'tag' && <Hash size={18} className="text-green-500 mr-2" />}
-                  {result.type === 'post' && <Search size={18} className="text-purple-500 mr-2" />}
+                  {result.type === 'user' && <AtSign size={16} className="text-blue-500 mr-2" />}
+                  {result.type === 'tag' && <Hash size={16} className="text-green-500 mr-2" />}
+                  {result.type === 'post' && <Search size={16} className="text-purple-500 mr-2" />}
                   <div>
-                    <div className="font-medium text-gray-900">{result.title}</div>
+                    <div className="font-medium text-sm text-gray-900">{result.title}</div>
                     {result.subtitle && (
-                      <div className="text-sm text-gray-500">{result.subtitle}</div>
+                      <div className="text-xs text-gray-500">{result.subtitle}</div>
                     )}
                   </div>
                 </Link>
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-gray-500">No results found</div>
+            <div className="p-3 text-center text-sm text-gray-500">No results found</div>
           )}
         </div>
       )}
