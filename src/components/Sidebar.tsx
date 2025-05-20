@@ -11,23 +11,29 @@ import {
   Users,
   User,
   PenSquare,
-  Menu
+  Menu,
+  LogIn
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation();
 
-  const navigationItems = [
+  const publicNavigationItems = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: Search, label: 'Explore', path: '/explore' },
+    { icon: Users, label: 'Communities', path: '/communities' },
+  ];
+
+  const privateNavigationItems = [
     { icon: Bell, label: 'Notifications', path: '/notifications' },
     { icon: Mail, label: 'Messages', path: '/messages' },
     { icon: Bookmark, label: 'Bookmarks', path: '/bookmarks' },
     { icon: Briefcase, label: 'Jobs', path: '/jobs' },
-    { icon: Users, label: 'Communities', path: '/communities' },
     { icon: User, label: 'Profile', path: '/profile' },
   ];
+
+  const navigationItems = user ? [...publicNavigationItems, ...privateNavigationItems] : publicNavigationItems;
 
   return (
     <div className="h-full flex flex-col justify-between p-4">
@@ -51,11 +57,21 @@ const Sidebar: React.FC = () => {
           </Link>
         ))}
 
-        {/* Post Button */}
-        <button className="w-full mt-4 bg-blue-500 text-white rounded-full py-3 px-6 font-bold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
-          <PenSquare size={20} />
-          <span>Post</span>
-        </button>
+        {/* Post/Login Button */}
+        {user ? (
+          <button className="w-full mt-4 bg-blue-500 text-white rounded-full py-3 px-6 font-bold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
+            <PenSquare size={20} />
+            <span>Post</span>
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            className="w-full mt-4 bg-blue-500 text-white rounded-full py-3 px-6 font-bold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+          >
+            <LogIn size={20} />
+            <span>Sign In</span>
+          </Link>
+        )}
       </div>
 
       {/* User Profile */}

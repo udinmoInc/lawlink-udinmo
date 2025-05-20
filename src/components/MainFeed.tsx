@@ -14,11 +14,9 @@ const MainFeed: React.FC = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [activeTab, user]);
+  }, [activeTab]);
 
   const fetchPosts = async () => {
-    if (!user) return;
-
     setLoading(true);
     try {
       let query = supabase
@@ -27,12 +25,12 @@ const MainFeed: React.FC = () => {
           *,
           profiles (*),
           likes_count: likes(count),
-          comments_count: comments(count),
-          user_has_liked: likes!inner(user_id)
+          comments_count: comments(count)
+          ${user ? ', user_has_liked: likes!inner(user_id)' : ''}
         `)
         .order('created_at', { ascending: false });
 
-      if (activeTab === 'following') {
+      if (activeTab === 'following' && user) {
         // Add following filter logic here
       }
 
@@ -44,7 +42,7 @@ const MainFeed: React.FC = () => {
         ...post,
         likes_count: post.likes_count?.[0]?.count || 0,
         comments_count: post.comments_count?.[0]?.count || 0,
-        user_has_liked: post.user_has_liked?.some((like: any) => like.user_id === user?.id) || false
+        user_has_liked: user ? (post.user_has_liked?.some((like: any) => like.user_id === user?.id) || false) : false
       }));
 
       setPosts(processedPosts);
@@ -68,14 +66,16 @@ const MainFeed: React.FC = () => {
         >
           For You
         </button>
-        <button
-          onClick={() => setActiveTab('following')}
-          className={`flex-1 py-4 text-center font-semibold hover:bg-gray-50 transition-colors ${
-            activeTab === 'following' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-600'
-          }`}
-        >
-          Following
-        </button>
+        {user && (
+          <button
+            onClick={() => setActiveTab('following')}
+            className={`flex-1 py-4 text-center font-semibold hover:bg-gray-50 transition-colors ${
+              activeTab === 'following' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-600'
+            }`}
+          >
+            Following
+          </button>
+        )}
         <button
           onClick={() => setActiveTab('nearby')}
           className={`flex-1 py-4 text-center font-semibold hover:bg-gray-50 transition-colors ${
@@ -87,23 +87,25 @@ const MainFeed: React.FC = () => {
       </div>
 
       {/* Post Creation */}
-      <div className="p-4 border-b border-gray-100 sticky top-[57px] bg-white z-10">
-        <CreatePostForm onPostCreated={fetchPosts} />
-        <div className="flex gap-4 mt-4">
-          <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors">
-            <Image size={20} />
-            <span className="text-sm font-medium">Image</span>
-          </button>
-          <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors">
-            <BarChart2 size={20} />
-            <span className="text-sm font-medium">Poll</span>
-          </button>
-          <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors">
-            <MapPin size={20} />
-            <span className="text-sm font-medium">Location</span>
-          </button>
+      {user && (
+        <div className="p-4 border-b border-gray-100 sticky top-[57px] bg-white z-10">
+          <CreatePostForm onPostCreated={fetchPosts} />
+          <div className="flex gap-4 mt-4">
+            <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors">
+              <Image size={20} />
+              <span className="text-sm font-medium">Image</span>
+            </button>
+            <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors">
+              <BarChart2 size={20} />
+              <span className="text-sm font-medium">Poll</span>
+            </button>
+            <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors">
+              <MapPin size={20} />
+              <span className="text-sm font-medium">Location</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Posts Feed */}
       <div className="divide-y divide-gray-100">

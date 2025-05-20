@@ -23,14 +23,12 @@ const AppContent = () => {
       <Navbar />
       <div className="flex">
         {/* Desktop Left Sidebar */}
-        {user && (
-          <div className="hidden md:block w-[275px] fixed left-0 top-16 bottom-0 bg-white border-r border-gray-100 overflow-y-auto">
-            <Sidebar />
-          </div>
-        )}
+        <div className="hidden md:block w-[275px] fixed left-0 top-16 bottom-0 bg-white border-r border-gray-100 overflow-y-auto">
+          <Sidebar />
+        </div>
 
         {/* Main Content */}
-        <div className={`flex-1 ${user ? 'md:ml-[275px] md:mr-[320px]' : ''} min-h-screen`}>
+        <div className={`flex-1 ${user ? 'md:ml-[275px] md:mr-[320px]' : 'md:ml-[275px] md:mr-[320px]'} min-h-screen`}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -43,11 +41,9 @@ const AppContent = () => {
         </div>
 
         {/* Desktop Right Sidebar */}
-        {user && (
-          <div className="hidden md:block w-[320px] fixed right-0 top-16 bottom-0 bg-white border-l border-gray-100 overflow-y-auto">
-            <TrendingSidebar />
-          </div>
-        )}
+        <div className="hidden md:block w-[320px] fixed right-0 top-16 bottom-0 bg-white border-l border-gray-100 overflow-y-auto">
+          <TrendingSidebar />
+        </div>
       </div>
 
       {/* Mobile Navigation */}
