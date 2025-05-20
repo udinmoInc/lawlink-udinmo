@@ -56,9 +56,9 @@ const MainFeed: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white md:border-x md:border-gray-100">
+    <div className="bg-white rounded-xl border border-gray-100">
       {/* Feed Tabs */}
-      <div className="flex border-b border-gray-100 sticky top-0 bg-white z-10">
+      <div className="flex border-b border-gray-100 sticky top-0 bg-white z-10 rounded-t-xl">
         <button
           onClick={() => setActiveTab('for-you')}
           className={`flex-1 py-3 text-center font-medium text-sm hover:bg-gray-50 transition-colors ${
@@ -111,7 +111,7 @@ const MainFeed: React.FC = () => {
       )}
 
       {/* Posts Feed */}
-      <div>
+      <div className="divide-y divide-gray-100">
         {loading ? (
           <div className="flex justify-center items-center h-40">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>

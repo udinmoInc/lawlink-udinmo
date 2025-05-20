@@ -21,14 +21,14 @@ function App() {
       <AuthProvider>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
-          <div className="flex">
-            {/* Desktop Sidebar */}
-            <div className="hidden md:block w-64 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-100 overflow-y-auto">
+          <div className="flex px-2 md:px-4">
+            {/* Desktop Sidebar - Hidden on medium and smaller screens */}
+            <div className="hidden lg:block w-64 fixed left-4 top-16 bottom-0 bg-white border border-gray-100 rounded-xl overflow-y-auto">
               <Sidebar />
             </div>
 
-            {/* Main Content */}
-            <div className="flex-1 md:ml-64 pt-16 pb-16 md:pb-0">
+            {/* Main Content - Centered with gap */}
+            <div className="w-full lg:ml-[17rem] lg:mr-[21rem] pt-16 pb-16 lg:pb-0">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -40,6 +40,11 @@ function App() {
                 <Route path="/explore" element={<ExplorePage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
               </Routes>
+            </div>
+
+            {/* Right Sidebar - Hidden on medium and smaller screens */}
+            <div className="hidden lg:block w-80 fixed right-4 top-16 bottom-0 bg-white border border-gray-100 rounded-xl overflow-y-auto">
+              <TrendingSidebar />
             </div>
           </div>
 
