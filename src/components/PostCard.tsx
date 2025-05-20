@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { Heart, MessageCircle, Share2, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Link as LinkIcon } from 'lucide-react';
 import { supabase, type Post, type Comment, type Profile } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -19,6 +19,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
   const [isLiked, setIsLiked] = useState(post.user_has_liked || false);
   const [likesCount, setLikesCount] = useState(typeof post.likes_count === 'number' ? post.likes_count : 0);
   const [commentsCount, setCommentsCount] = useState(typeof post.comments_count === 'number' ? post.comments_count : 0);
+  const [showShareMenu, setShowShareMenu] = useState(false);
 
   const toggleComments = async () => {
     if (!showComments) {
@@ -111,8 +112,65 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
     }
   };
 
+  const handleShare = async (method: 'copy' | 'twitter' | 'facebook') => {
+    const postUrl = `${window.location.origin}/post/${post.id}`;
+    const postText = `${post.content.slice(0, 100)}${post.content.length > 100 ? '...' : ''}`;
+    
+    switch (method) {
+      case 'copy':
+        try {
+          await navigator.clipboard.writeText(postUrl);
+          toast.success('Link copied to clipboard!');
+        } catch (err) {
+          toast.error('Failed to copy link');
+        }
+        break;
+      
+      case 'twitter':
+        window.open(
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(postText)}&url=${encodeURIComponent(postUrl)}`,
+          '_blank'
+        );
+        break;
+      
+      case 'facebook':
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
+          '_blank'
+        );
+        break;
+    }
+    
+    setShowShareMenu(false);
+  };
+
+  // Generate metadata for the post
+  const metadata = {
+    '@context': 'https://schema.org',
+    '@type': 'SocialMediaPosting',
+    author: {
+      '@type': 'Person',
+      name: post.profiles?.full_name || post.profiles?.username,
+    },
+    datePublished: post.created_at,
+    text: post.content,
+    interactionStatistic: [
+      {
+        '@type': 'InteractionCounter',
+        interactionType: 'https://schema.org/LikeAction',
+        userInteractionCount: likesCount,
+      },
+      {
+        '@type': 'InteractionCounter',
+        interactionType: 'https://schema.org/CommentAction',
+        userInteractionCount: commentsCount,
+      },
+    ],
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
+      <script type="application/ld+json">{JSON.stringify(metadata)}</script>
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
@@ -165,9 +223,38 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
             <span className="ml-2 text-sm">{commentsCount}</span>
           </button>
 
-          <button className="flex items-center hover:text-green-500">
-            <Share2 size={20} />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setShowShareMenu(!showShareMenu)}
+              className="flex items-center hover:text-green-500"
+            >
+              <Share2 size={20} />
+            </button>
+
+            {showShareMenu && (
+              <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
+                <button
+                  onClick={() => handleShare('copy')}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
+                >
+                  <LinkIcon size={16} className="mr-2" />
+                  Copy Link
+                </button>
+                <button
+                  onClick={() => handleShare('twitter')}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                >
+                  Share on Twitter
+                </button>
+                <button
+                  onClick={() => handleShare('facebook')}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                >
+                  Share on Facebook
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
