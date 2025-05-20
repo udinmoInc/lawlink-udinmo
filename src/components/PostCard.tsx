@@ -172,13 +172,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
             </p>
           </div>
         </div>
-        <button className="text-gray-400 hover:text-gray-600">
+        <button className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100">
           <MoreHorizontal size={20} />
         </button>
       </div>
 
       <div className="mb-4">
-        <p className="text-gray-900 whitespace-pre-line">{post.content}</p>
+        <p className="text-gray-900 whitespace-pre-line break-words">{post.content}</p>
       </div>
 
       {post.image_url && (
@@ -190,21 +190,24 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
       <div className="flex items-center justify-between text-gray-500 border-t border-gray-100 pt-3">
         <button
           onClick={handleLike}
-          className={`flex items-center ${isLiked ? 'text-red-500' : 'hover:text-red-500'}`}
+          className={`flex items-center gap-1 p-2 rounded-full hover:bg-gray-100 ${isLiked ? 'text-red-500' : ''}`}
         >
           <Heart size={20} className={isLiked ? 'fill-current' : ''} />
-          <span className="ml-2 text-sm">{likesCount}</span>
+          <span className="text-sm">{likesCount}</span>
         </button>
 
-        <button onClick={toggleComments} className="flex items-center hover:text-blue-500">
+        <button 
+          onClick={toggleComments} 
+          className="flex items-center gap-1 p-2 rounded-full hover:bg-gray-100"
+        >
           <MessageCircle size={20} />
-          <span className="ml-2 text-sm">{commentsCount}</span>
+          <span className="text-sm">{commentsCount}</span>
         </button>
 
         <div className="relative">
           <button 
             onClick={() => setShowShareMenu(!showShareMenu)}
-            className="flex items-center hover:text-blue-500"
+            className="flex items-center gap-1 p-2 rounded-full hover:bg-gray-100"
           >
             <Share2 size={20} />
           </button>
@@ -240,7 +243,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
   );
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6 hover:border-gray-300 transition-colors">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-4 hover:border-gray-300 transition-colors">
       <div className="p-4">
         {isPostPage ? (
           <PostContent />
@@ -255,18 +258,18 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
         <div className="bg-gray-50 p-4 border-t border-gray-200">
           {user && (
             <form onSubmit={handleAddComment} className="mb-4">
-              <div className="flex">
+              <div className="flex gap-2">
                 <input
                   type="text"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Add a comment..."
-                  className="flex-grow px-4 py-2 bg-white border border-gray-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                  className="flex-grow px-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                   disabled={isLoading}
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 disabled:bg-blue-300 disabled:opacity-50"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 disabled:opacity-50"
                   disabled={isLoading || !newComment.trim()}
                 >
                   Post
@@ -282,15 +285,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
           ) : comments.length > 0 ? (
             <div className="space-y-4">
               {comments.map((comment) => (
-                <div key={comment.id} className="flex space-x-3">
+                <div key={comment.id} className="flex gap-3">
                   {comment.profiles?.avatar_url ? (
                     <img
                       src={comment.profiles.avatar_url}
                       alt={comment.profiles.username}
-                      className="h-8 w-8 rounded-full object-cover"
+                      className="h-8 w-8 rounded-full object-cover flex-shrink-0"
                     />
                   ) : (
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                       {comment.profiles?.username?.charAt(0).toUpperCase() || 'U'}
                     </div>
                   )}
@@ -303,7 +306,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
                         {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-700">{comment.content}</p>
+                    <p className="text-sm text-gray-700 break-words">{comment.content}</p>
                   </div>
                 </div>
               ))}
