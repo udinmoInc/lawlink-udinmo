@@ -22,14 +22,20 @@ function App() {
       <AuthProvider>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
-          <div className="flex px-2 md:px-4">
-            {/* Desktop Sidebar - Hidden on medium and smaller screens */}
-            <div className="hidden lg:block w-64 fixed left-4 top-16 bottom-0 bg-white border border-gray-100 rounded-xl overflow-y-auto">
-              <Sidebar />
+          <div className="flex mx-auto max-w-[1600px]">
+            {/* Left Sidebar - Fixed width */}
+            <div className="w-[280px] fixed left-0 top-16 bottom-0 px-4">
+              <div className="bg-white rounded-xl border border-gray-200 h-full p-4">
+                <div className="space-y-4">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="h-12 bg-gray-100 rounded-lg"></div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Main Content - Centered with gap */}
-            <div className="w-full lg:ml-[17rem] lg:mr-[21rem] pt-16 pb-16 lg:pb-0">
+            {/* Main Content - Fixed width */}
+            <div className="w-[640px] mx-auto pt-16">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -43,13 +49,18 @@ function App() {
               </Routes>
             </div>
 
-            {/* Right Sidebar - Hidden on medium and smaller screens */}
-            <div className="hidden lg:block w-80 fixed right-4 top-16 bottom-0 bg-white border border-gray-100 rounded-xl overflow-y-auto">
-              <TrendingSidebar />
+            {/* Right Sidebar - Fixed width */}
+            <div className="w-[280px] fixed right-0 top-16 bottom-0 px-4">
+              <div className="bg-white rounded-xl border border-gray-200 h-full p-4">
+                <div className="space-y-6">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="h-24 bg-gray-100 rounded-lg"></div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Mobile Navigation */}
           <MobileNavbar />
 
           <Toaster 
