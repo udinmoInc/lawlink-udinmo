@@ -22,30 +22,36 @@ function App() {
       <AuthProvider>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
-          <div className="flex px-2 md:px-4">
-            {/* Desktop Sidebar - Hidden on medium and smaller screens */}
-            <div className="hidden lg:block w-64 fixed left-4 top-16 bottom-0 bg-white border border-gray-100 rounded-xl overflow-y-auto">
-              <Sidebar />
-            </div>
+          <div className="container mx-auto px-4">
+            <div className="flex gap-6 relative">
+              {/* Left Sidebar - Hidden below 1024px */}
+              <div className="hidden lg:block w-64 fixed left-4 top-16 bottom-0">
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full overflow-y-auto">
+                  <Sidebar />
+                </div>
+              </div>
 
-            {/* Main Content - Centered with gap */}
-            <div className="w-full lg:ml-[17rem] lg:mr-[21rem] pt-16 pb-16 lg:pb-0">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/create" element={<CreatePostPage />} />
-                <Route path="/groups" element={<GroupsPage />} />
-                <Route path="/post/:id" element={<PostPage />} />
-                <Route path="/explore" element={<ExplorePage />} />
-                <Route path="/notifications" element={<NotificationsPage />} />
-              </Routes>
-            </div>
+              {/* Main Content */}
+              <main className="w-full lg:ml-[17rem] lg:mr-[21rem] pt-16 pb-16 lg:pb-0 lg:max-w-[44rem] mx-auto">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/create" element={<CreatePostPage />} />
+                  <Route path="/groups" element={<GroupsPage />} />
+                  <Route path="/post/:id" element={<PostPage />} />
+                  <Route path="/explore" element={<ExplorePage />} />
+                  <Route path="/notifications" element={<NotificationsPage />} />
+                </Routes>
+              </main>
 
-            {/* Right Sidebar - Hidden on medium and smaller screens */}
-            <div className="hidden lg:block w-80 fixed right-4 top-16 bottom-0 bg-white border border-gray-100 rounded-xl overflow-y-auto">
-              <TrendingSidebar />
+              {/* Right Sidebar - Hidden below 1024px */}
+              <div className="hidden lg:block w-80 fixed right-4 top-16 bottom-0">
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full overflow-y-auto">
+                  <TrendingSidebar />
+                </div>
+              </div>
             </div>
           </div>
 

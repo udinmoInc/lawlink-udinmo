@@ -56,7 +56,7 @@ const MainFeed: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
       {/* Feed Tabs */}
       <div className="flex border-b border-gray-100 sticky top-0 bg-white z-10 rounded-t-xl">
         <button
