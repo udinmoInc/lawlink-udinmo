@@ -3,6 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Heart, MessageCircle, Share2, MoreHorizontal, Link as LinkIcon, Twitter, Facebook } from 'lucide-react';
 import { supabase, type Post, type Comment, type Profile } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { Link, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 interface PostCardProps {
@@ -12,6 +13,7 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
   const { user } = useAuth();
+  const location = useLocation();
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<(Comment & { profiles: Profile })[]>([]);
   const [newComment, setNewComment] = useState('');
@@ -20,6 +22,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
   const [likesCount, setLikesCount] = useState(typeof post.likes_count === 'number' ? post.likes_count : 0);
   const [commentsCount, setCommentsCount] = useState(typeof post.comments_count === 'number' ? post.comments_count : 0);
   const [showShareMenu, setShowShareMenu] = useState(false);
+
+  const isPostPage = location.pathname.startsWith('/post/');
 
   const toggleComments = async () => {
     if (!showComments) {
@@ -144,95 +148,107 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
     setShowShareMenu(false);
   };
 
+  const PostContent = () => (
+    <>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center">
+          {post.profiles?.avatar_url ? (
+            <img
+              src={post.profiles.avatar_url}
+              alt={post.profiles.username}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
+              {post.profiles?.username?.charAt(0).toUpperCase() || 'U'}
+            </div>
+          )}
+          <div className="ml-3">
+            <p className="font-semibold text-gray-900">
+              {post.profiles?.full_name || post.profiles?.username}
+            </p>
+            <p className="text-xs text-gray-500">
+              {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+            </p>
+          </div>
+        </div>
+        <button className="text-gray-400 hover:text-gray-600">
+          <MoreHorizontal size={20} />
+        </button>
+      </div>
+
+      <div className="mb-4">
+        <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
+      </div>
+
+      {post.image_url && (
+        <div className="mb-4 rounded-lg overflow-hidden">
+          <img src={post.image_url} alt="Post" className="w-full h-auto object-cover" />
+        </div>
+      )}
+
+      <div className="flex items-center justify-between text-gray-500 border-t border-gray-100 pt-3">
+        <button
+          onClick={handleLike}
+          className={`flex items-center ${isLiked ? 'text-red-500' : 'hover:text-red-500'}`}
+        >
+          <Heart size={20} className={isLiked ? 'fill-current' : ''} />
+          <span className="ml-2 text-sm">{likesCount}</span>
+        </button>
+
+        <button onClick={toggleComments} className="flex items-center hover:text-blue-500">
+          <MessageCircle size={20} />
+          <span className="ml-2 text-sm">{commentsCount}</span>
+        </button>
+
+        <div className="relative">
+          <button 
+            onClick={() => setShowShareMenu(!showShareMenu)}
+            className="flex items-center hover:text-green-500"
+          >
+            <Share2 size={20} />
+          </button>
+
+          {showShareMenu && (
+            <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
+              <button
+                onClick={() => handleShare('copy')}
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
+              >
+                <LinkIcon size={16} className="mr-2" />
+                Copy Link
+              </button>
+              <button
+                onClick={() => handleShare('twitter')}
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
+              >
+                <Twitter size={16} className="mr-2" />
+                Share on Twitter
+              </button>
+              <button
+                onClick={() => handleShare('facebook')}
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
+              >
+                <Facebook size={16} className="mr-2" />
+                Share on Facebook
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
       <div className="p-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            {post.profiles?.avatar_url ? (
-              <img
-                src={post.profiles.avatar_url}
-                alt={post.profiles.username}
-                className="h-10 w-10 rounded-full object-cover"
-              />
-            ) : (
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
-                {post.profiles?.username?.charAt(0).toUpperCase() || 'U'}
-              </div>
-            )}
-            <div className="ml-3">
-              <p className="font-semibold text-gray-900">
-                {post.profiles?.full_name || post.profiles?.username}
-              </p>
-              <p className="text-xs text-gray-500">
-                {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
-              </p>
-            </div>
-          </div>
-          <button className="text-gray-400 hover:text-gray-600">
-            <MoreHorizontal size={20} />
-          </button>
-        </div>
-
-        <div className="mb-4">
-          <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
-        </div>
-
-        {post.image_url && (
-          <div className="mb-4 rounded-lg overflow-hidden">
-            <img src={post.image_url} alt="Post" className="w-full h-auto object-cover" />
-          </div>
+        {isPostPage ? (
+          <PostContent />
+        ) : (
+          <Link to={`/post/${post.id}`} className="block">
+            <PostContent />
+          </Link>
         )}
-
-        <div className="flex items-center justify-between text-gray-500 border-t border-gray-100 pt-3">
-          <button
-            onClick={handleLike}
-            className={`flex items-center ${isLiked ? 'text-red-500' : 'hover:text-red-500'}`}
-          >
-            <Heart size={20} className={isLiked ? 'fill-current' : ''} />
-            <span className="ml-2 text-sm">{likesCount}</span>
-          </button>
-
-          <button onClick={toggleComments} className="flex items-center hover:text-blue-500">
-            <MessageCircle size={20} />
-            <span className="ml-2 text-sm">{commentsCount}</span>
-          </button>
-
-          <div className="relative">
-            <button 
-              onClick={() => setShowShareMenu(!showShareMenu)}
-              className="flex items-center hover:text-green-500"
-            >
-              <Share2 size={20} />
-            </button>
-
-            {showShareMenu && (
-              <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
-                <button
-                  onClick={() => handleShare('copy')}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
-                >
-                  <LinkIcon size={16} className="mr-2" />
-                  Copy Link
-                </button>
-                <button
-                  onClick={() => handleShare('twitter')}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
-                >
-                  <Twitter size={16} className="mr-2" />
-                  Share on Twitter
-                </button>
-                <button
-                  onClick={() => handleShare('facebook')}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
-                >
-                  <Facebook size={16} className="mr-2" />
-                  Share on Facebook
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
 
       {showComments && (
@@ -275,7 +291,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostUpdate }) => {
                     />
                   ) : (
                     <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs">
-                      {comment.profiles?.username.charAt(0).toUpperCase() || 'U'}
+                      {comment.profiles?.username?.charAt(0).toUpperCase() || 'U'}
                     </div>
                   )}
                   <div className="flex-1 bg-white p-3 rounded-lg shadow-sm">
