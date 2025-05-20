@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, MapPin, BarChart2 } from 'lucide-react';
+import { Image, MapPin, BarChart2, Share2, SmilePlus } from 'lucide-react';
 import CreatePostForm from './CreatePostForm';
 import PostCard from './PostCard';
 import { supabase, type Post } from '../lib/supabase';
@@ -8,14 +8,13 @@ import toast from 'react-hot-toast';
 
 const MainFeed: React.FC = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('for-you');
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showPostTools, setShowPostTools] = useState(false);
+  const [content, setContent] = useState('');
 
   useEffect(() => {
     fetchPosts();
-  }, [activeTab]);
+  }, []);
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -30,10 +29,6 @@ const MainFeed: React.FC = () => {
           ${user ? ', user_has_liked: likes!inner(user_id)' : ''}
         `)
         .order('created_at', { ascending: false });
-
-      if (activeTab === 'following' && user) {
-        // Add following filter logic here
-      }
 
       const { data: postsData, error: postsError } = await query;
 
@@ -55,58 +50,71 @@ const MainFeed: React.FC = () => {
     }
   };
 
+  const handleCreatePost = async () => {
+    if (!content.trim()) return;
+
+    try {
+      const { error } = await supabase.from('posts').insert([
+        {
+          user_id: user?.id,
+          content: content.trim(),
+        },
+      ]);
+
+      if (error) throw error;
+
+      setContent('');
+      fetchPosts();
+      toast.success('Post created successfully!');
+    } catch (error: any) {
+      toast.error('Failed to create post');
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl border border-gray-100">
-      {/* Feed Tabs */}
-      <div className="flex border-b border-gray-100 sticky top-0 bg-white z-10 rounded-t-xl">
-        <button
-          onClick={() => setActiveTab('for-you')}
-          className={`flex-1 py-3 text-center font-medium text-sm hover:bg-gray-50 transition-colors ${
-            activeTab === 'for-you' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-600'
-          }`}
-        >
-          For You
-        </button>
-        {user && (
-          <button
-            onClick={() => setActiveTab('following')}
-            className={`flex-1 py-3 text-center font-medium text-sm hover:bg-gray-50 transition-colors ${
-              activeTab === 'following' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-600'
-            }`}
-          >
-            Following
-          </button>
-        )}
-        <button
-          onClick={() => setActiveTab('nearby')}
-          className={`flex-1 py-3 text-center font-medium text-sm hover:bg-gray-50 transition-colors ${
-            activeTab === 'nearby' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-600'
-          }`}
-        >
-          Nearby
-        </button>
-      </div>
-
-      {/* Post Creation */}
+      {/* Create Post Section */}
       {user && (
-        <div className="px-4 py-3 border-b border-gray-100 sticky top-[49px] bg-white z-10">
-          <CreatePostForm onPostCreated={fetchPosts} />
-          {showPostTools && (
-            <div className="flex gap-4 mt-3 overflow-x-auto pb-2 scrollbar-hide">
-              <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors whitespace-nowrap">
-                <Image size={18} />
-                <span className="text-sm font-medium">Image</span>
-              </button>
-              <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors whitespace-nowrap">
-                <BarChart2 size={18} />
-                <span className="text-sm font-medium">Poll</span>
-              </button>
-              <button className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors whitespace-nowrap">
-                <MapPin size={18} />
-                <span className="text-sm font-medium">Location</span>
-              </button>
+        <div className="p-4 border-b border-gray-100">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+              {user.email?.[0].toUpperCase()}
             </div>
-          )}
+            <div className="flex-1">
+              <div className="bg-gray-50 rounded-xl p-3">
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="What's on your mind?"
+                  className="w-full bg-transparent border-0 resize-none placeholder:text-gray-500 focus:ring-0 p-0 text-gray-900"
+                  rows={3}
+                />
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
+                  <div className="flex gap-2">
+                    <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                      <Image size={20} />
+                    </button>
+                    <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                      <SmilePlus size={20} />
+                    </button>
+                    <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                      <MapPin size={20} />
+                    </button>
+                    <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                      <Share2 size={20} />
+                    </button>
+                  </div>
+                  <button
+                    onClick={handleCreatePost}
+                    disabled={!content.trim()}
+                    className="px-4 py-1.5 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors disabled:bg-blue-300"
+                  >
+                    Post
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
