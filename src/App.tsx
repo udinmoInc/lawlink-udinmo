@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import RecentPosts from './components/RecentPosts';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -19,13 +20,13 @@ function App() {
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           <div className="flex">
-            {/* Desktop Sidebar */}
-            <div className="hidden md:block w-80 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-200 overflow-y-auto">
+            {/* Desktop Left Sidebar */}
+            <div className="hidden md:block w-64 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-100 overflow-y-auto">
               <Sidebar />
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 md:ml-80">
+            <div className="flex-1 md:ml-64 md:mr-64">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -35,6 +36,11 @@ function App() {
                 <Route path="/groups" element={<GroupsPage />} />
                 <Route path="/post/:id" element={<PostPage />} />
               </Routes>
+            </div>
+
+            {/* Desktop Right Sidebar */}
+            <div className="hidden md:block w-64 fixed right-0 top-16 bottom-0 bg-white border-l border-gray-100 overflow-y-auto">
+              <RecentPosts />
             </div>
           </div>
           <Toaster 
