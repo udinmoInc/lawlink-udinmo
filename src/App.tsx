@@ -16,11 +16,11 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="min-h-screen bg-[#15202b] text-white">
+        <div className="min-h-screen bg-gray-50">
           <Navbar />
           <div className="flex">
             {/* Desktop Sidebar */}
-            <div className="hidden md:block w-80 fixed left-0 top-16 bottom-0 bg-[#1a2734] border-r border-[#38444d] overflow-y-auto">
+            <div className="hidden md:block w-80 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-200 overflow-y-auto">
               <Sidebar />
             </div>
 
@@ -41,9 +41,9 @@ function App() {
             position="top-right"
             toastOptions={{
               style: {
-                background: '#1a2734',
-                color: '#fff',
-                border: '1px solid #38444d'
+                background: '#fff',
+                color: '#334155',
+                border: '1px solid #e2e8f0'
               }
             }}
           />

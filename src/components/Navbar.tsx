@@ -10,12 +10,12 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className="bg-[#1a2734] border-b border-[#38444d] fixed w-full top-0 z-10 md:block hidden">
+      <nav className="bg-white border-b border-gray-200 fixed w-full top-0 z-10 md:block hidden">
         <div className="max-w-[1800px] mx-auto px-4">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center">
-                <span className="text-2xl font-bold text-[#1d9bf0]">
+                <span className="text-2xl font-bold text-primary-600">
                   SocialApp
                 </span>
               </Link>
@@ -31,8 +31,8 @@ const Navbar: React.FC = () => {
                   to="/"
                   className={`px-3 py-2 rounded-md text-sm font-medium ${
                     location.pathname === '/'
-                      ? 'text-blue-600'
-                      : 'text-gray-500 hover:text-blue-600'
+                      ? 'text-primary-600'
+                      : 'text-gray-500 hover:text-primary-600'
                   }`}
                 >
                   <Home className="h-6 w-6" />
@@ -44,8 +44,8 @@ const Navbar: React.FC = () => {
                       to="/groups"
                       className={`px-3 py-2 rounded-md text-sm font-medium ${
                         location.pathname === '/groups'
-                          ? 'text-blue-600'
-                          : 'text-gray-500 hover:text-blue-600'
+                          ? 'text-primary-600'
+                          : 'text-gray-500 hover:text-primary-600'
                       }`}
                     >
                       <Users className="h-6 w-6" />
@@ -54,8 +54,8 @@ const Navbar: React.FC = () => {
                       to="/create"
                       className={`px-3 py-2 rounded-md text-sm font-medium ${
                         location.pathname === '/create'
-                          ? 'text-blue-600'
-                          : 'text-gray-500 hover:text-blue-600'
+                          ? 'text-primary-600'
+                          : 'text-gray-500 hover:text-primary-600'
                       }`}
                     >
                       <PlusSquare className="h-6 w-6" />
@@ -64,8 +64,8 @@ const Navbar: React.FC = () => {
                       to="/profile"
                       className={`px-3 py-2 rounded-md text-sm font-medium ${
                         location.pathname === '/profile'
-                          ? 'text-blue-600'
-                          : 'text-gray-500 hover:text-blue-600'
+                          ? 'text-primary-600'
+                          : 'text-gray-500 hover:text-primary-600'
                       }`}
                     >
                       <User className="h-6 w-6" />
@@ -82,8 +82,8 @@ const Navbar: React.FC = () => {
                     to="/login"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       location.pathname === '/login'
-                        ? 'text-blue-600'
-                        : 'text-gray-500 hover:text-blue-600'
+                        ? 'text-primary-600'
+                        : 'text-gray-500 hover:text-primary-600'
                     }`}
                   >
                     <LogIn className="h-6 w-6" />
@@ -96,12 +96,12 @@ const Navbar: React.FC = () => {
       </nav>
 
       {/* Mobile bottom navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a2734] border-t border-[#38444d] z-10">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
         <div className="flex justify-around items-center h-16">
           <Link
             to="/"
             className={`flex flex-col items-center justify-center flex-1 h-full ${
-              location.pathname === '/' ? 'text-blue-600' : 'text-gray-500'
+              location.pathname === '/' ? 'text-primary-600' : 'text-gray-500'
             }`}
           >
             <Home className="h-6 w-6" />
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
               <Link
                 to="/groups"
                 className={`flex flex-col items-center justify-center flex-1 h-full ${
-                  location.pathname === '/groups' ? 'text-blue-600' : 'text-gray-500'
+                  location.pathname === '/groups' ? 'text-primary-600' : 'text-gray-500'
                 }`}
               >
                 <Users className="h-6 w-6" />
@@ -122,7 +122,7 @@ const Navbar: React.FC = () => {
               <Link
                 to="/create"
                 className={`flex flex-col items-center justify-center flex-1 h-full ${
-                  location.pathname === '/create' ? 'text-blue-600' : 'text-gray-500'
+                  location.pathname === '/create' ? 'text-primary-600' : 'text-gray-500'
                 }`}
               >
                 <PlusSquare className="h-6 w-6" />
@@ -131,7 +131,7 @@ const Navbar: React.FC = () => {
               <Link
                 to="/profile"
                 className={`flex flex-col items-center justify-center flex-1 h-full ${
-                  location.pathname === '/profile' ? 'text-blue-600' : 'text-gray-500'
+                  location.pathname === '/profile' ? 'text-primary-600' : 'text-gray-500'
                 }`}
               >
                 <User className="h-6 w-6" />
@@ -142,7 +142,7 @@ const Navbar: React.FC = () => {
             <Link
               to="/login"
               className={`flex flex-col items-center justify-center flex-1 h-full ${
-                location.pathname === '/login' ? 'text-blue-600' : 'text-gray-500'
+                location.pathname === '/login' ? 'text-primary-600' : 'text-gray-500'
               }`}
             >
               <LogIn className="h-6 w-6" />
@@ -156,6 +156,6 @@ const Navbar: React.FC = () => {
       <div className="md:hidden h-16"></div>
     </>
   );
-};
+}
 
 export default Navbar;
